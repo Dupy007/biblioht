@@ -17,3 +17,11 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+// Broadcast::routes(['middleware' => ['auth:sanctum']]);
+Route::middleware(['api','auth:sanctum'])->group(function () {
+    Route::resource('category', App\Http\Controllers\CategoryController::class);
+    Route::resource('pyramid', App\Http\Controllers\PyramidController::class);
+    Route::resource('user', App\Http\Controllers\UserController::class);
+    Route::resource('userpyramid', App\Http\Controllers\UserPyramidController::class);
+});
+Auth::routes();

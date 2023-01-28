@@ -3,7 +3,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <h4>Register</h4>
+                    <h4>Add User</h4>
                 </div>
                 <div class="card-body">
                     <!-- <form @submit.prevent="create" @submit="checkForm"> -->
@@ -35,27 +35,18 @@
                             </div>
                             <div class="col-12 mb-2">
                                 <div class="form-group">
+                                    <label>Type</label>
+                                    <input type="text" class="form-control " v-model="user.type_account">
+                                </div>
+                            </div>
+                            <div class="col-12 mb-2">
+                                <div class="form-group">
                                     <label>Code parrain</label>
                                     <input type="text" class="form-control " v-model="user.parrain">
                                 </div>
                             </div>
                             <div class="col-12 mb-2">
-                                <div class="form-group">
-                                    <label>Password</label>
-                                    <input type="password" class="form-control " v-model="user.password">
-                                </div>
-                            </div>
-                            <div class="col-12 mb-2">
-                                <div class="form-group">
-                                    <label>Confirm Password</label>
-                                    <input type="password" class="form-control " v-model="user.password_confirmation">
-                                </div>
-                            </div>
-                            <div class="col-12 mb-2">
-                                <button type="submit" class="btn btn-primary">Register</button>
-                                <a href="/login" class="btn btn-link">
-                                            I have a account
-                                </a>
+                                <button type="submit" class="btn btn-primary">Save</button>
                             </div>
                         </div>
                     </form>
@@ -77,20 +68,16 @@ export default{
                 code:"",
                 parrain:"",
                 type_account:"user",
-                password:"",
-                password_confirmation:"",
+                password:"PLFMotDePasse",
+                password_confirmation:"PLFMotDePasse",
             },
             errors:[],
         }
     },
     methods:{
         async create(){
-            await axios.post('/newuser', this.user).then(response=>{
-                axios.get('/sanctum/csrf-cookie').then(response => {
-                    axios.post('/login', this.user ).then(response =>{
-                                    window.location.replace('/home');
-                                });
-                });
+            await axios.post('/api/user', this.user).then(response=>{
+                this.$router.push({name:"userList"})
             }).catch(error=>{
                 var theeerrors= [];
                 theeerrors = error.response.data.errors;

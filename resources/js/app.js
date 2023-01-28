@@ -12,11 +12,28 @@ import { createApp } from 'vue';
  * registering components with the application instance so they are ready
  * to use in your application's views. An example is included for you.
  */
+import { createRouter, createWebHistory } from 'vue-router';
+import App from './components/App.vue';
+import dashboard from './components/Dashboard.vue';
+import welcome from './components/Welcome.vue';
+import login from './components/Login.vue';
+import register from './components/Register.vue';
+import plfmodal from './components/Mymodal.vue';
+import {routes} from './routes';
+
+ const router = createRouter({
+     history: createWebHistory(),
+     routes:routes
+ })
 
 const app = createApp({});
 
-import dashboard from './components/Dashboard.vue';
-import welcome from './components/Welcome.vue';
-app.component('example-dashboard', dashboard);
-app.component('example-welcome', welcome);
+app.component('modal', plfmodal);
+app.component('component-app', App);
+app.component('component-dashboard', dashboard);
+app.component('component-welcome', welcome);
+app.component('component-login', login);
+app.component('component-register', register);
+
+app.use(router);
 app.mount('#app');

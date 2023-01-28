@@ -3,10 +3,10 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <h4>Register</h4>
+                    <h4>Update User</h4>
                 </div>
                 <div class="card-body">
-                    <!-- <form @submit.prevent="create" @submit="checkForm"> -->
+                    <!-- <form @submit.prevent="update" @submit="checkForm"> -->
                     <form @submit="checkForm">
                         <div class="row">
                             <p v-if="errors.length" class="bg-danger">
@@ -35,27 +35,29 @@
                             </div>
                             <div class="col-12 mb-2">
                                 <div class="form-group">
-                                    <label>Code parrain</label>
-                                    <input type="text" class="form-control " v-model="user.parrain">
+                                    <label>Code</label>
+                                    <input type="text" class="form-control" readonly v-model="user.code">
                                 </div>
                             </div>
                             <div class="col-12 mb-2">
                                 <div class="form-group">
-                                    <label>Password</label>
-                                    <input type="password" class="form-control " v-model="user.password">
+                                    <label>Type</label>
+                                    <input type="text" class="form-control " v-model="user.type_account">
                                 </div>
                             </div>
                             <div class="col-12 mb-2">
                                 <div class="form-group">
-                                    <label>Confirm Password</label>
-                                    <input type="password" class="form-control " v-model="user.password_confirmation">
+                                    <label>Code Parrain</label>
+                                    <div v-if="codeparrain">
+                                        <input type="text" class="form-control " v-model="user.parrain" readonly>
+                                    </div>
+                                    <div v-else>
+                                        <input type="text" class="form-control " v-model="user.parrain">
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-12 mb-2">
-                                <button type="submit" class="btn btn-primary">Register</button>
-                                <a href="/login" class="btn btn-link">
-                                            I have a account
-                                </a>
+                                <button type="submit" class="btn btn-primary">Update</button>
                             </div>
                         </div>
                     </form>
@@ -67,7 +69,7 @@
 
 <script>
 export default{
-    name:"add-user",
+    name:"update-user",
     data(){
         return{
             user:{
@@ -76,21 +78,34 @@ export default{
                 email:"",
                 code:"",
                 parrain:"",
-                type_account:"user",
-                password:"",
-                password_confirmation:"",
+                type_account:"",
+                _method:"patch"
             },
             errors:[],
+            codeparrain:null,
         }
     },
+    mounted(){
+        this.showuser()
+    },
     methods:{
-        async create(){
-            await axios.post('/newuser', this.user).then(response=>{
-                axios.get('/sanctum/csrf-cookie').then(response => {
-                    axios.post('/login', this.user ).then(response =>{
-                                    window.location.replace('/home');
-                                });
-                });
+        async showuser(){
+            await axios.get('/api/user/'+this.$route.params.id).then(response=>{
+                const { name,mobile_no,email,code,type_account,parrain} = response.data
+                this.user.name = name
+                this.user.mobile_no = mobile_no
+                this.user.email = email
+                this.user.code = code
+                this.user.parrain = this.codeparrain = parrain
+                this.user.type_account = type_account
+            }).catch(error=>{
+                console.log(error)
+            })
+        },
+        async update(){
+            await axios.post('/api/user/'+this.$route.params.id, this.user).then(response=>{
+                this.$router.push({name:"userList"})
+                // console.log(response.data);
             }).catch(error=>{
                 var theeerrors= [];
                 theeerrors = error.response.data.errors;
@@ -100,11 +115,11 @@ export default{
                         this.errors.push(element[0]);
                     }
                 }
-                console.log('error =>' ,error);
+                console.log(error)
             })
         },
         checkForm:function(e) {
-            if(this.user.name && this.user.email  ) this.create();
+            if(this.user.name && this.user.email  ) this.update();
             this.errors = [];
             if(!this.user.name) this.errors.push("Name required.");
             if(!this.user.email) this.errors.push("Email required.");

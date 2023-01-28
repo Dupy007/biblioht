@@ -31,8 +31,8 @@
                                     <button type="submit" class="btn btn-primary">
                                         Login
                                     </button>
-                                        <a class="btn btn-link">
-                                            Forgot Your Password?
+                                        <a href="/register" class="btn btn-link">
+                                            I don't have a account
                                         </a>
                                 </div>
                             </div>
@@ -63,7 +63,7 @@ export default{
         async login(){
             await axios.get('/sanctum/csrf-cookie').then(response => {
                 axios.post('/login', this.user).then(response=>{
-                    this.$router.push({name:"home"})
+                    window.location.replace('/home');
                 }).catch(error=>{
                     var theeerrors= [];
                     theeerrors = error.response.data.errors;

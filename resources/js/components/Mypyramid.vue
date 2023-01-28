@@ -5,18 +5,6 @@
                 <div class="card">
                     <div class="card-header">Dashboard</div>
 
-
-                    <button id="show-modal" @click="showModal = true">Show Modal</button>
-  <!-- use the modal component, pass in the prop -->
-  <modal v-if="showModal" @close="showModal = false">
-    <!--
-      you can use custom content here to overwrite
-      default content
-    -->
-    <h3 slot="header">custom header</h3>
-  </modal>
-
-
                     <div class="card-body">
                         <div v-for="(userpyramid,key) in userpyramids" :key="key">
                             <div class="row row-cols-1 row-cols-sm-1 row-cols-md-2 g-2">
@@ -30,25 +18,25 @@
                                         <div class="position-relative mt-3">
                                             <div class=" top-50 start-0">
                                                 <div class="box">
-                                                    <div class="tra m"><span>{{ theposition(userpyramid,8) }}</span></div>
-                                                    <div class="tra n"><span>{{ theposition(userpyramid,9) }}</span></div>
-                                                    <div class="tra m"><span>{{ theposition(userpyramid,10) }}</span></div>
-                                                    <div class="tra n"><span>{{ theposition(userpyramid,11) }}</span></div>
+                                                    <div class="tra m"><span @click="myalert(userpyramid,8)">{{ theposition(userpyramid,8) }}</span></div>
+                                                    <div class="tra n"><span @click="myalert(userpyramid,9)">{{ theposition(userpyramid,9) }}</span></div>
+                                                    <div class="tra m"><span @click="myalert(userpyramid,10)">{{ theposition(userpyramid,10) }}</span></div>
+                                                    <div class="tra n"><span @click="myalert(userpyramid,11)">{{ theposition(userpyramid,11) }}</span></div>
                                                     <div class="center-2">
-                                                        <div class="tritra"><span>{{ theposition(userpyramid,4) }}</span></div>
-                                                        <div class="tritra"><span>{{ theposition(userpyramid,5) }}</span></div>
+                                                        <div class="tritra"><span @click="myalert(userpyramid,4)">{{ theposition(userpyramid,4) }}</span></div>
+                                                        <div class="tritra"><span @click="myalert(userpyramid,5)">{{ theposition(userpyramid,5) }}</span></div>
                                                         <div class="center">
-                                                            <div class="tri"><span>{{ theposition(userpyramid,2) }}</span></div>
-                                                            <div class="cer"><span>{{ theposition(userpyramid,1) }}</span></div>
-                                                            <div class="tri"><span>{{ theposition(userpyramid,3) }}</span></div>
+                                                            <div class="tri"><span @click="myalert(userpyramid,2)">{{ theposition(userpyramid,2) }}</span></div>
+                                                            <div class="cer"><span @click="myalert(userpyramid,1)">{{ theposition(userpyramid,1) }}</span></div>
+                                                            <div class="tri"><span @click="myalert(userpyramid,3)">{{ theposition(userpyramid,3) }}</span></div>
                                                         </div>
-                                                        <div class="tritra"><span>{{ theposition(userpyramid,6) }}</span></div>
-                                                        <div class="tritra"><span>{{ theposition(userpyramid,7) }}</span></div>
+                                                        <div class="tritra"><span @click="myalert(userpyramid,6)">{{ theposition(userpyramid,6) }}</span></div>
+                                                        <div class="tritra"><span @click="myalert(userpyramid,7)">{{ theposition(userpyramid,7) }}</span></div>
                                                     </div>
-                                                    <div class="tra n"><span>{{ theposition(userpyramid,12) }}</span></div>
-                                                    <div class="tra m"><span>{{ theposition(userpyramid,13) }}</span></div>
-                                                    <div class="tra n"><span>{{ theposition(userpyramid,14) }}</span></div>
-                                                    <div class="tra m"><span>{{ theposition(userpyramid,15) }}</span></div>
+                                                    <div class="tra n"><span @click="myalert(userpyramid,12)">{{ theposition(userpyramid,12) }}</span></div>
+                                                    <div class="tra m"><span @click="myalert(userpyramid,13)">{{ theposition(userpyramid,13) }}</span></div>
+                                                    <div class="tra n"><span @click="myalert(userpyramid,14)">{{ theposition(userpyramid,14) }}</span></div>
+                                                    <div class="tra m"><span @click="myalert(userpyramid,15)">{{ theposition(userpyramid,15) }}</span></div>
                                                 </div>
                                             </div>
                                         </div>
@@ -60,8 +48,6 @@
                                 </div>
                             </div>
                         </div>
-    
-    
                         </div>
                     </div>
                 </div>
@@ -70,23 +56,22 @@
     </div>
     </template>
     <script>
-    
     export default {
-        name:"Welcome",
+        name:"mypyramid",
         data(){
             return{
                 userpyramids:[],
-                showModal:false,
+                auth:[]
             }
         },
         mounted(){
+            this.auth = JSON.parse(localStorage.auth);
             this.getUserpyramids()
         },
         methods:{
             async getUserpyramids(){
-                await axios.get('/api/userpyramid').then(response=>{
+                await axios.get('/api/userpyramid/'+this.auth.id).then(response=>{
                     this.userpyramids = response.data
-                    // console.log(response.data);
                 }).catch(error=>{
                     console.log(error)
                     this.userpyramids = []
@@ -116,6 +101,19 @@
                 }
                 return value;
             },
+            myalert(userpyramid,position){
+                var value='Name : ';
+                for (const key in userpyramid) {
+                    if (position== userpyramid[key].position) {
+                        value += (userpyramid[key].user_name);
+                        // value += "\n";
+                        // value += (userpyramid[key].user_code);
+                        value += "\nPhone : ";
+                        value += (userpyramid[key].user_mobile_no);
+                    }
+                }
+                alert(value);
+            },
             created_at(userpyramid){
                 var value='';
                 for (const key in userpyramid) {
@@ -140,6 +138,7 @@
     }
     </script>
 <style>
+
 span{
     position: absolute;
     left: -50%;
@@ -148,6 +147,7 @@ span{
     font-size: 14px;
     font-weight: bold;
     font-family: Arial, Helvetica, sans-serif;
+    cursor: pointer;
 }
 
 .box {
@@ -348,4 +348,3 @@ span{
     transform: rotate(-58.5deg);
 }
 </style>
-    
