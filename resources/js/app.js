@@ -18,17 +18,14 @@ import dashboard from './components/Dashboard.vue';
 import welcome from './components/Welcome.vue';
 import login from './components/Login.vue';
 import register from './components/Register.vue';
-import plfmodal from './components/Mymodal.vue';
 import {routes} from './routes';
-
- const router = createRouter({
-     history: createWebHistory(),
-     routes:routes
- })
-
+import './jquery.js';
+const router = createRouter({
+    history: createWebHistory(),
+    routes:routes
+})
 const app = createApp({});
 
-app.component('modal', plfmodal);
 app.component('component-app', App);
 app.component('component-dashboard', dashboard);
 app.component('component-welcome', welcome);

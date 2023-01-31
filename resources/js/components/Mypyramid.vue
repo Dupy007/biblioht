@@ -70,8 +70,9 @@
         },
         methods:{
             async getUserpyramids(){
-                await axios.get('/api/userpyramid/'+this.auth.id).then(response=>{
+                await axios.get('/api/mypyramid').then(response=>{
                     this.userpyramids = response.data
+                    console.log(response.data)
                 }).catch(error=>{
                     console.log(error)
                     this.userpyramids = []

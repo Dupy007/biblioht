@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\UserPyramid;
 use App\Models\Pyramid;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+
 class UserPyramidController extends Controller
 {
     //
@@ -31,7 +33,6 @@ class UserPyramidController extends Controller
                                                                     "user_mobile_no"=>$UserPyramid->user->mobile_no,
                                                                     "category_name"=>$UserPyramid->pyramid->category->name,
                                                                 );
-
         }
 
         return response()->json($tmp);
@@ -56,11 +57,15 @@ class UserPyramidController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'category_id'   => ['required', 'numeric'],
-            'user_id'       => ['required', 'numeric'],
-            'position'      => ['required', 'numeric'],
+            'pyramid_id'   =>   ['required', 'numeric'],
+            'user_id'       =>  ['required', 'numeric'],
+            'position'      =>  ['required', 'numeric'],
         ]);
-        $UserPyramid = UserPyramid::create($validatedData);
+        // $UserPyramid = UserPyramid::create($validatedData);
+        $UserPyramid = UserPyramid::updateOrCreate(
+            ['pyramid_id' => $request->pyramid_id, 'user_id' => $request->user_id , 'position' => $request->position],
+            ['pyramid_id' => $request->pyramid_id, 'user_id' => $request->user_id , 'position' => $request->position]
+        );
         return response()->json([
             'message' => 'UserPyramid Created Successfully!!!',
             'UserPyramid' => $UserPyramid
@@ -70,29 +75,55 @@ class UserPyramidController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\UserPyramid  $UserPyramid
+    //  * @param  \App\Models\UserPyramid  $UserPyramid
      * @return \Illuminate\Http\Response
      */
-    public function show(UserPyramid $UserPyramid)
+    public function show( $UserPyramid)
     {
         $UserPyramids = UserPyramid::with(['user','pyramid'=>['category']])
-                                    ->orderBy('created_at', 'desc')
-                                    ->firstwhere('user_id',Auth::id())
+                                    ->where('pyramid_id',intval($UserPyramid))
                                     ->get();
         $tmp=array();
         foreach ($UserPyramids as $key => $UserPyramid) {
-            $tmp[$UserPyramid->pyramid_id][$UserPyramid->id]=array(
+            $tmp[$UserPyramid->position]=array(
                                                                     "pyramid_user_id"   =>$UserPyramid->id,
                                                                     "pyramid_id"        =>$UserPyramid->pyramid_id,
-                                                                    "created_at"        =>$UserPyramid->created_at,
                                                                     "position"          =>$UserPyramid->position,
                                                                     "user_id"           =>$UserPyramid->user_id,
-                                                                    "user_code"         =>$UserPyramid->user->code,
-                                                                    "user_name"         =>$UserPyramid->user->name,
-                                                                    "user_mobile_no"    =>$UserPyramid->user->mobile_no,
-                                                                    "category_name"     =>$UserPyramid->pyramid->category->name,
                                                                 );
 
+        }
+        return response()->json($tmp);
+    }
+    /**
+     * Display the specified resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function mypyramid()
+    {
+        $UserPyramids = UserPyramid::with(['user','pyramid'=>['category']])
+                                    ->orderBy('created_at', 'desc')
+                                    ->firstwhere('user_id',Auth::id());
+                                    // ->get();
+
+        $tmp=array();
+        if (!empty($UserPyramids)) {
+            $UserPyramids = $UserPyramids->get();
+            foreach ($UserPyramids as $key => $UserPyramid) {
+                $tmp[$UserPyramid->pyramid_id][$UserPyramid->id]=array(
+                                                                        "pyramid_user_id"   =>$UserPyramid->id,
+                                                                        "pyramid_id"        =>$UserPyramid->pyramid_id,
+                                                                        "created_at"        =>$UserPyramid->created_at,
+                                                                        "position"          =>$UserPyramid->position,
+                                                                        "user_id"           =>$UserPyramid->user_id,
+                                                                        "user_code"         =>$UserPyramid->user->code,
+                                                                        "user_name"         =>$UserPyramid->user->name,
+                                                                        "user_mobile_no"    =>$UserPyramid->user->mobile_no,
+                                                                        "category_name"     =>$UserPyramid->pyramid->category->name,
+                                                                    );
+
+            }
         }
         return response()->json($tmp);
     }
@@ -118,7 +149,7 @@ class UserPyramidController extends Controller
     public function update(Request $request, UserPyramid $UserPyramid)
     {
         $validatedData = $request->validate([
-            'category_id'   => ['required', 'numeric'],
+            'pyramid_id'   => ['required', 'numeric'],
             'user_id'       => ['required', 'numeric'],
             'position'      => ['required', 'numeric'],
         ]);

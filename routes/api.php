@@ -23,5 +23,6 @@ Route::middleware(['api','auth:sanctum'])->group(function () {
     Route::resource('pyramid', App\Http\Controllers\PyramidController::class);
     Route::resource('user', App\Http\Controllers\UserController::class);
     Route::resource('userpyramid', App\Http\Controllers\UserPyramidController::class);
+    Route::get('/mypyramid', [App\Http\Controllers\UserPyramidController::class, 'mypyramid']);
 });
 Auth::routes();

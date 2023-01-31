@@ -14,18 +14,14 @@
                                 <li v-for="error in errors">{{ error }}</li>
                                 </ul>
                             </p>
-                            <div class="col-12 mb-2">
-                                <div class="form-group">
-                                    <label>User</label>
-                                    <select class="form-select" v-model="pyramid.user_id">
+                            <div class="col-12 mb-2 ">
+                                <h5>User</h5>
+                                <div class="form-group" v-for="(userpyramid,key) in userpyramids" :key="key">
+                                    <label>Position  {{ key }}</label>
+                                    <select class="form-select" v-model="userpyramid.user_id">
+                                        <option></option>
                                         <option v-for="option in users" v-bind:value="option.id">{{ option.name }}</option>
                                     </select>
-                                </div>
-                            </div>
-                            <div class="col-12 mb-2">
-                                <div class="form-group">
-                                    <label>Expire</label>
-                                    <input type="text" class="form-control" v-model="pyramid.expire_at">
                                 </div>
                             </div>
                             <div class="col-12 mb-2">
@@ -40,41 +36,55 @@
 </template>
 
 <script>
+import { ref } from 'vue'
 export default{
     name:"update-pyramid",
     data(){
         return{
-            pyramid:{
-                user_id:"",
-                category_id:"",
-                expire_at:"",
+            userpyramid:{
+                user_id:    null,
+                pyramid_id: null,
+                position:   null,
                 _method:"patch"
             },
+            userpyramids:{},
             users:[],
-            categories:[],
             errors:[],
+            intervalid1:null,
+            changes:null,
         }
     },
     mounted(){
-        this.showpyramid(),
-        this.getUsers(),
-        this.getCategories()
+        this.showuserpyramid(),
+        this.getUsers()
     },
     methods:{
-        async showpyramid(){
-            await axios.get('/api/pyramid/'+this.$route.params.id).then(response=>{
-                const { user_id,category_id, expire_at} = response.data
-                this.pyramid.user_id = user_id
-                this.pyramid.category_id = category_id
-                this.pyramid.expire_at = expire_at
+        async showuserpyramid(){
+            await axios.get('/api/userpyramid/'+this.$route.params.id).then(response=>{
+                this.userpyramids = response.data
+                for (let index = 1; index < 16; index++) {
+                    let userpyramid = {
+                                user_id:    null,
+                                pyramid_id: response.data[1].pyramid_id,
+                                position:   index,
+                                _method:"patch"
+                            };
+                    if (response.data[index]) {
+                        userpyramid.user_id =  response.data[index].user_id;
+                    }
+                    this.userpyramids[index] = userpyramid;
+                    
+                }
             }).catch(error=>{
                 console.log(error)
             })
         },
-        async update(){
-            await axios.post('/api/pyramid/'+this.$route.params.id, this.pyramid).then(response=>{
-                this.$router.push({name:"pyramidList"})
+        async update(userpyramid){
+            await axios.post('/api/userpyramid/'+this.$route.params.id, userpyramid).then(response=>{
+                // this.$router.push({name:"pyramidList"})
+                this.setBackgroundColor('s');
             }).catch(error=>{
+                this.setBackgroundColor('f');
                 var theeerrors= [];
                 theeerrors = error.response.data.errors;
                 for (const key in theeerrors) {
@@ -94,20 +104,23 @@ export default{
                 this.users = []
             })
         },
-        async getCategories(){
-            await axios.get('/api/category').then(response=>{
-                this.categories = response.data
-            }).catch(error=>{
-                console.log(error)
-                this.categories = []
-            })
-        },
         checkForm:function(e) {
-            if(this.pyramid.user_id && this.pyramid.category_id  ) this.update();
-            this.errors = [];
-            if(!this.pyramid.user_id) this.errors.push("User required.");
-            if(!this.pyramid.category_id) this.errors.push("Category required.");
+            for (const key in this.userpyramids) {
+                if (Object.hasOwnProperty.call(this.userpyramids, key)) {
+                    const element = this.userpyramids[key];
+                    if(element.user_id ) this.update(element);
+                }
+            }
+            this.showuserpyramid();
             e.preventDefault();
+        },
+        setBackgroundColor (val) {
+            var backgroundColor = ref('#f00000')
+            if(val=='s'){
+                backgroundColor = ref('#00f000')
+            }
+            document.querySelector('body').style.backgroundColor = backgroundColor.value;
+            setTimeout(() => { document.querySelector('body').style.backgroundColor =null; }, 3000);
         }
     }
 }

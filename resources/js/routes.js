@@ -10,6 +10,7 @@ const PyramidEdit = () => import('./components/Pyramid/Edit.vue')
 const UserList = () => import('./components/User/List.vue')
 const UserCreate = () => import('./components/User/Add.vue')
 const UserEdit = () => import('./components/User/Edit.vue')
+const UserPyramidEdit = () => import('./components/UserPyramid/Edit.vue')
 
 export const routes = [
     {
@@ -71,6 +72,11 @@ export const routes = [
         name: 'userAdd',
         path: '/user/add',
         component: UserCreate
+    },
+    {
+        name: 'userpyramidEdit',
+        path: '/userpyramid/:id/edit',
+        component: UserPyramidEdit
     },
 
 ]
