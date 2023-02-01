@@ -45,6 +45,18 @@
                                             <div class="position-absolute bottom-0 end-0 text-danger">{{ expire_at(userpyramid) }}</div>
                                         </div>
                                     </div>
+                                    <form @submit.prevent="endpyramid" v-if="!isend && iscomplete">
+                                        <input type="text" class="form-control" v-model="pyramid_id" hidden>
+                                        <div class="col-12 mb-2">
+                                            <button type="submit" class="btn btn-primary">Confirm the end of the pyramid</button>
+                                        </div>
+                                    </form>
+                                    <form @submit.prevent="nextpyramid" v-if="isend">
+                                        <input type="text" class="form-control" v-model="pyramid_id" hidden>
+                                        <div class="col-12 mb-2">
+                                            <button type="submit" class="btn btn-primary">Go to next level pyramid</button>
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -63,17 +75,36 @@
                 userpyramids:[],
                 ismine:false,
                 isend:false,
+                iscomplete:false,
+                pyramid_id:null,
             }
         },
         mounted(){
             this.getUserpyramids()
         },
         methods:{
+            async nextpyramid(){
+                await axios.get('/plf/nextpyramid/'+this.pyramid_id).then(response=>{
+                    console.log(response)
+                }).catch(error=>{
+                    console.log(error)
+                    this.userpyramids = []
+                })
+            },
+            async endpyramid(){
+                await axios.get('/plf/endpyramid/'+this.pyramid_id).then(response=>{
+                    console.log(response)
+                }).catch(error=>{
+                    console.log(error)
+                    this.userpyramids = []
+                })
+            },
             async getUserpyramids(){
                 await axios.get('/plf/mypyramid').then(response=>{
                     this.userpyramids = response.data.userpyramids
                     this.ismine = response.data.ismine
                     this.isend = response.data.isend
+                    this.iscomplete = response.data.iscomplete
                 }).catch(error=>{
                     console.log(error)
                     this.userpyramids = []
@@ -92,6 +123,7 @@
                 for (const key in userpyramid) {
                     value = (userpyramid[key].pyramid_id);break;
                 }
+                this.pyramid_id=value;
                 return value;
             },
             theposition(userpyramid,position){

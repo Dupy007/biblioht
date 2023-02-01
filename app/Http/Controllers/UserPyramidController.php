@@ -83,7 +83,14 @@ class UserPyramidController extends Controller
                                     ->where('pyramid_id',intval($UserPyramid))
                                     ->get();
         $tmp=array();
+        $complete=false; $end=false;
         foreach ($UserPyramids as $key => $UserPyramid) {
+            if ($this->checkend($UserPyramid->pyramid_id)) {
+                $complete=true;
+            }
+            if (!empty($UserPyramid->pyramid->expire_at)) {
+                $end=true;
+            }
             $tmp[$UserPyramid->position]=array(
                                                                     "pyramid_user_id"   =>$UserPyramid->id,
                                                                     "pyramid_id"        =>$UserPyramid->pyramid_id,
@@ -92,7 +99,7 @@ class UserPyramidController extends Controller
                                                                 );
 
         }
-        return response()->json($tmp);
+        return response()->json(['userpyramid'=>$tmp , 'iscomplete'=>$complete ,'isend' => $end]);
     }
     /**
      * Display the specified resource.
@@ -108,6 +115,7 @@ class UserPyramidController extends Controller
         $tmp=array();
         $mine=false;
         $end=false;
+        $complete=false;
         if (!empty($PyramidId)) {
             $UserPyramids = UserPyramid::with(['user','pyramid'=>['category']])
                                         ->where('pyramid_id',intval($PyramidId->pyramid_id))
@@ -116,8 +124,11 @@ class UserPyramidController extends Controller
                 if (Auth::id()==$UserPyramid->user_id && $UserPyramid->position==1) {
                     $mine=true;
                 }
-                if (Auth::id()==$UserPyramid->user_id && is_null($UserPyramid->pyramid->expire_at)) {
+                if (Auth::id()==$UserPyramid->user_id && !empty($UserPyramid->pyramid->expire_at)) {
                     $end=true;
+                }
+                if (Auth::id()==$UserPyramid->user_id && $this->checkend($UserPyramid->pyramid_id)) {
+                    $complete=true;
                 }
                 $tmp[$UserPyramid->pyramid_id][$UserPyramid->id]=array(
                                                                         "pyramid_user_id"   =>$UserPyramid->id,
@@ -133,7 +144,7 @@ class UserPyramidController extends Controller
 
             }
         }
-        return response()->json(['userpyramids' => $tmp,'ismine' => $mine,'isend' => $end]);
+        return response()->json(['userpyramids' => $tmp,'ismine' => $mine,'isend' => $end,'iscomplete' => $complete]);
     }
 
     /**
@@ -182,5 +193,48 @@ class UserPyramidController extends Controller
             'message' => 'UserPyramid Deleted Successfully!!!'
         ]);
     }
+    private function checkend($idpyramid){
+        $val = false;
+        $UserPyramids = UserPyramid::with(['user','pyramid'=>['category']])
+                                    ->where('pyramid_id',intval($idpyramid))
+                                    ->get();
+        if (count($UserPyramids)>=15){
+            $val=true;
+        }
+        return $val;
+    }
+    public static function subdivise(int $pyramid_id){
+        $UserPyramids = UserPyramid::with(['user','pyramid'=>['category']])
+        ->where('pyramid_id',intval($pyramid_id))
+        ->get();
+        $tmp=array();
+        foreach ($UserPyramids as $key => $UserPyramid) {
+            $category_id = $UserPyramid->pyramid->category_id;
+            $tmp[$UserPyramid->position]=array(
+                                                    "pyramid_user_id"   =>$UserPyramid->id,
+                                                    "pyramid_id"        =>$UserPyramid->pyramid_id,
+                                                    "position"          =>$UserPyramid->position,
+                                                    "user_id"           =>$UserPyramid->user_id,
+                                                );
+        }
+        
+        $pyramid2 = Pyramid::create(['category_id'=>$category_id,'user_id'=>$tmp[2]['user_id']]);
+        $pyramid3 = Pyramid::create(['category_id'=>$category_id,'user_id'=>$tmp[3]['user_id']]);
 
+        UserPyramid::create( ['pyramid_id'=>$pyramid2->id,'user_id'=>$tmp[2]['user_id'],'position'=>1 ] );
+        UserPyramid::create( ['pyramid_id'=>$pyramid2->id,'user_id'=>$tmp[4]['user_id'],'position'=>2 ] );
+        UserPyramid::create( ['pyramid_id'=>$pyramid2->id,'user_id'=>$tmp[5]['user_id'],'position'=>3 ] );
+        UserPyramid::create( ['pyramid_id'=>$pyramid2->id,'user_id'=>$tmp[8]['user_id'],'position'=>4 ] );
+        UserPyramid::create( ['pyramid_id'=>$pyramid2->id,'user_id'=>$tmp[9]['user_id'],'position'=>5 ] );
+        UserPyramid::create( ['pyramid_id'=>$pyramid2->id,'user_id'=>$tmp[10]['user_id'],'position'=>6 ] );
+        UserPyramid::create( ['pyramid_id'=>$pyramid2->id,'user_id'=>$tmp[11]['user_id'],'position'=>7 ] );
+
+        UserPyramid::create( ['pyramid_id'=>$pyramid3->id,'user_id'=>$tmp[3]['user_id'],'position'=>1 ] );
+        UserPyramid::create( ['pyramid_id'=>$pyramid3->id,'user_id'=>$tmp[6]['user_id'],'position'=>2 ] );
+        UserPyramid::create( ['pyramid_id'=>$pyramid3->id,'user_id'=>$tmp[7]['user_id'],'position'=>3 ] );
+        UserPyramid::create( ['pyramid_id'=>$pyramid3->id,'user_id'=>$tmp[12]['user_id'],'position'=>4 ] );
+        UserPyramid::create( ['pyramid_id'=>$pyramid3->id,'user_id'=>$tmp[13]['user_id'],'position'=>5 ] );
+        UserPyramid::create( ['pyramid_id'=>$pyramid3->id,'user_id'=>$tmp[14]['user_id'],'position'=>6 ] );
+        UserPyramid::create( ['pyramid_id'=>$pyramid3->id,'user_id'=>$tmp[15]['user_id'],'position'=>7 ] );
+    }
 }

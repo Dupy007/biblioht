@@ -29,6 +29,12 @@
                             </div>
                         </div>
                     </form>
+                    <form @submit.prevent="endpyramid" v-if="!isend && iscomplete">
+                        <input type="text" class="form-control" v-model="pyramid_id" hidden>
+                        <div class="col-12 mb-2">
+                            <button type="submit" class="btn btn-primary">Confirm the end of the pyramid</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -53,6 +59,9 @@ export default{
             errors:[],
             intervalid1:null,
             changes:null,
+            iscomplete:false,
+            isend:false,
+            pyramid_id:null,
         }
     },
     mounted(){
@@ -62,17 +71,22 @@ export default{
     methods:{
         async showuserpyramid(){
             await axios.get('/plf/userpyramid/'+this.$route.params.id).then(response=>{
-                this.userpyramids = response.data
+                // this.userpyramids = response.data.userpyramid
+                this.iscomplete = response.data.iscomplete
+                this.isend = response.data.isend
+
+                let res = response.data.userpyramid
                 for (let index = 1; index < 16; index++) {
                     let userpyramid = {
                                 user_id:    null,
-                                pyramid_id: response.data[1].pyramid_id,
+                                pyramid_id: res[1].pyramid_id,
                                 position:   index,
                                 _method:"patch"
                             };
-                    if (response.data[index]) {
-                        userpyramid.id =  response.data[index].pyramid_user_id;
-                        userpyramid.user_id =  response.data[index].user_id;
+                        this.pyramid_id=res[1].pyramid_id;
+                    if (res[index]) {
+                        userpyramid.id =  res[index].pyramid_user_id;
+                        userpyramid.user_id =  res[index].user_id;
                     }
                     this.userpyramids[index] = userpyramid;
                     
@@ -123,7 +137,15 @@ export default{
             }
             document.querySelector('body').style.backgroundColor = backgroundColor.value;
             setTimeout(() => { document.querySelector('body').style.backgroundColor =null; }, 3000);
-        }
+        },
+        async endpyramid(){
+                await axios.get('/plf/endpyramid/'+this.pyramid_id).then(response=>{
+                    
+                }).catch(error=>{
+                    console.log(error)
+                    this.userpyramids = []
+                })
+            },
     }
 }
 </script>

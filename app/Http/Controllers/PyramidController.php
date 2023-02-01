@@ -111,4 +111,19 @@ class PyramidController extends Controller
             'message' => 'Pyramid Deleted Successfully!!!'
         ]);
     }
+        /**
+     * Update the specified resource in storage.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function endpyramid(int $id)
+    {
+        $pyramid= Pyramid::where('id',$id)
+                ->update(['expire_at'=> \Carbon\Carbon::now()]);
+        UserPyramidController::subdivise($id);
+        return response()->json([
+            'message' => 'Pyramid Updated Successfully!!!',
+            'pyramid' => $pyramid
+        ]);
+    }
 }

@@ -60,7 +60,7 @@ class UserController extends Controller
         }
         return false;
     }
-    private function givePosition($position){
+    public function givePosition($position){
         $fav=array();
         for ($i=1; $i <8 ; $i++) {
             if ($position==$i) {
