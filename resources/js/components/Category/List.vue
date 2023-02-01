@@ -58,7 +58,7 @@ export default {
     },
     methods:{
         async getCategories(){
-            await axios.get('/api/category').then(response=>{
+            await axios.get('/plf/category').then(response=>{
                 this.categories = response.data
             }).catch(error=>{
                 console.log(error)
@@ -67,7 +67,7 @@ export default {
         },
         deleteCategory(id){
             if(confirm("Are you sure to delete this category ?")){
-                axios.delete('/api/category/'+id).then(response=>{
+                axios.delete('/plf/category/'+id).then(response=>{
                     this.getCategories()
                 }).catch(error=>{
                     console.log(error)

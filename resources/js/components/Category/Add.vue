@@ -58,7 +58,7 @@ export default{
     },
     methods:{
         async create(){
-            await axios.post('/api/category', this.category).then(response=>{
+            await axios.post('/plf/category', this.category).then(response=>{
                 this.$router.push({name:"categoryList"})
             }).catch(error=>{
                 var theeerrors= [];

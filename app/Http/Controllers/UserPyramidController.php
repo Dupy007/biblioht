@@ -61,10 +61,9 @@ class UserPyramidController extends Controller
             'user_id'       =>  ['required', 'numeric'],
             'position'      =>  ['required', 'numeric'],
         ]);
-        // $UserPyramid = UserPyramid::create($validatedData);
         $UserPyramid = UserPyramid::updateOrCreate(
-            ['pyramid_id' => $request->pyramid_id, 'user_id' => $request->user_id , 'position' => $request->position],
-            ['pyramid_id' => $request->pyramid_id, 'user_id' => $request->user_id , 'position' => $request->position]
+            ['pyramid_id' => $request->pyramid_id, 'user_id' => $request->user_id ],
+            ['position' => $request->position]
         );
         return response()->json([
             'message' => 'UserPyramid Created Successfully!!!',
@@ -102,15 +101,24 @@ class UserPyramidController extends Controller
      */
     public function mypyramid()
     {
-        $UserPyramids = UserPyramid::with(['user','pyramid'=>['category']])
+        $PyramidId = UserPyramid::where('user_id',Auth::id())
                                     ->orderBy('created_at', 'desc')
-                                    ->firstwhere('user_id',Auth::id());
-                                    // ->get();
+                                    ->first();
 
         $tmp=array();
-        if (!empty($UserPyramids)) {
-            $UserPyramids = $UserPyramids->get();
+        $mine=false;
+        $end=false;
+        if (!empty($PyramidId)) {
+            $UserPyramids = UserPyramid::with(['user','pyramid'=>['category']])
+                                        ->where('pyramid_id',intval($PyramidId->pyramid_id))
+                                        ->get();
             foreach ($UserPyramids as $key => $UserPyramid) {
+                if (Auth::id()==$UserPyramid->user_id && $UserPyramid->position==1) {
+                    $mine=true;
+                }
+                if (Auth::id()==$UserPyramid->user_id && is_null($UserPyramid->pyramid->expire_at)) {
+                    $end=true;
+                }
                 $tmp[$UserPyramid->pyramid_id][$UserPyramid->id]=array(
                                                                         "pyramid_user_id"   =>$UserPyramid->id,
                                                                         "pyramid_id"        =>$UserPyramid->pyramid_id,
@@ -125,7 +133,7 @@ class UserPyramidController extends Controller
 
             }
         }
-        return response()->json($tmp);
+        return response()->json(['userpyramids' => $tmp,'ismine' => $mine,'isend' => $end]);
     }
 
     /**
@@ -143,11 +151,12 @@ class UserPyramidController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\UserPyramid  $UserPyramid
+    //  * @param  \App\Models\UserPyramid  $UserPyramid
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, UserPyramid $UserPyramid)
+    public function update(Request $request,  $id)
     {
+        $UserPyramid = UserPyramid::find($id);
         $validatedData = $request->validate([
             'pyramid_id'   => ['required', 'numeric'],
             'user_id'       => ['required', 'numeric'],

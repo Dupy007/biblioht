@@ -58,7 +58,7 @@ export default {
     },
     methods:{
         async getPyramids(){
-            await axios.get('/api/pyramid').then(response=>{
+            await axios.get('/plf/pyramid').then(response=>{
                 this.pyramids = response.data
             }).catch(error=>{
                 console.log(error)
@@ -67,7 +67,7 @@ export default {
         },
         deletepyramid(id){
             if(confirm("Are you sure to delete this pyramid ?")){
-                axios.delete('/api/pyramid/'+id).then(response=>{
+                axios.delete('/plf/pyramid/'+id).then(response=>{
                     this.getPyramids()
                 }).catch(error=>{
                     console.log(error)

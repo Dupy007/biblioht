@@ -62,7 +62,7 @@ export default{
     },
     methods:{
         async showCategory(){
-            await axios.get('/api/category/'+this.$route.params.id).then(response=>{
+            await axios.get('/plf/category/'+this.$route.params.id).then(response=>{
                 const { name,valeur, description} = response.data
                 this.category.name = name
                 this.category.valeur = valeur
@@ -72,7 +72,7 @@ export default{
             })
         },
         async update(){
-            await axios.post('/api/category/'+this.$route.params.id, this.category).then(response=>{
+            await axios.post('/plf/category/'+this.$route.params.id, this.category).then(response=>{
                 this.$router.push({name:"categoryList"})
             }).catch(error=>{
                 var theeerrors= [];

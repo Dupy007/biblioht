@@ -68,7 +68,7 @@ export default {
     },
     methods:{
         async getUsers(){
-            await axios.get('/api/user').then(response=>{
+            await axios.get('/plf/user').then(response=>{
                 this.users = response.data
             }).catch(error=>{
                 console.log(error)
@@ -77,7 +77,7 @@ export default {
         },
         deleteuser(id){
             if(confirm("Are you sure to delete this user ?")){
-                axios.delete('/api/user/'+id).then(response=>{
+                axios.delete('/plf/user/'+id).then(response=>{
                     this.getUsers()
                 }).catch(error=>{
                     console.log(error)

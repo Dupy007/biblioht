@@ -70,7 +70,7 @@ export default{
     },
     methods:{
         async showpyramid(){
-            await axios.get('/api/pyramid/'+this.$route.params.id).then(response=>{
+            await axios.get('/plf/pyramid/'+this.$route.params.id).then(response=>{
                 const { user_id,category_id, expire_at} = response.data
                 this.pyramid.user_id = user_id
                 this.pyramid.category_id = category_id
@@ -80,7 +80,7 @@ export default{
             })
         },
         async update(){
-            await axios.post('/api/pyramid/'+this.$route.params.id, this.pyramid).then(response=>{
+            await axios.post('/plf/pyramid/'+this.$route.params.id, this.pyramid).then(response=>{
                 this.$router.push({name:"pyramidList"})
             }).catch(error=>{
                 var theeerrors= [];
@@ -95,7 +95,7 @@ export default{
             })
         },
         async getUsers(){
-            await axios.get('/api/user').then(response=>{
+            await axios.get('/plf/user').then(response=>{
                 this.users = response.data
             }).catch(error=>{
                 console.log(error)
@@ -103,7 +103,7 @@ export default{
             })
         },
         async getCategories(){
-            await axios.get('/api/category').then(response=>{
+            await axios.get('/plf/category').then(response=>{
                 this.categories = response.data
             }).catch(error=>{
                 console.log(error)

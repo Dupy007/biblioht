@@ -90,7 +90,7 @@ export default{
     },
     methods:{
         async showuser(){
-            await axios.get('/api/user/'+this.$route.params.id).then(response=>{
+            await axios.get('/plf/user/'+this.$route.params.id).then(response=>{
                 const { name,mobile_no,email,code,type_account,parrain} = response.data
                 this.user.name = name
                 this.user.mobile_no = mobile_no
@@ -103,7 +103,7 @@ export default{
             })
         },
         async update(){
-            await axios.post('/api/user/'+this.$route.params.id, this.user).then(response=>{
+            await axios.post('/plf/user/'+this.$route.params.id, this.user).then(response=>{
                 this.$router.push({name:"userList"})
                 // console.log(response.data);
             }).catch(error=>{

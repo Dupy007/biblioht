@@ -61,18 +61,19 @@
         data(){
             return{
                 userpyramids:[],
-                auth:[]
+                ismine:false,
+                isend:false,
             }
         },
         mounted(){
-            this.auth = JSON.parse(localStorage.auth);
             this.getUserpyramids()
         },
         methods:{
             async getUserpyramids(){
-                await axios.get('/api/mypyramid').then(response=>{
-                    this.userpyramids = response.data
-                    console.log(response.data)
+                await axios.get('/plf/mypyramid').then(response=>{
+                    this.userpyramids = response.data.userpyramids
+                    this.ismine = response.data.ismine
+                    this.isend = response.data.isend
                 }).catch(error=>{
                     console.log(error)
                     this.userpyramids = []
@@ -138,214 +139,3 @@
         },
     }
     </script>
-<style>
-
-span{
-    position: absolute;
-    left: -50%;
-    display: block;
-    text-align: center;
-    font-size: 14px;
-    font-weight: bold;
-    font-family: Arial, Helvetica, sans-serif;
-    cursor: pointer;
-}
-
-.box {
-    width: 100%;
-    height: 100%;
-    position: relative;
-    aspect-ratio: 1/1;
-    box-sizing: border-box;
-    /* border: 1px solid #000; */
-}
-
-.center, .center-2{
-    margin: auto;
-}
-
-.tri {
-    position: absolute;
-    height: 0;
-    width: 0;
-    border-bottom: 100px solid red;
-    border-right: 100px solid transparent;
-    border-left: 100px solid transparent;
-    z-index: 1;
-}
-
-.tri span{
-    width: 90px;
-    transform: translate(-44px, 44px);
-}
-
-.tri:last-child span{
-    transform: scale(-1) translate(44px, -44px);
-}
-
-
-.tri:first-child{
-    left: 300px;
-    top: 300px;
-    transform: translate(-50%, -103%);
-}
-
-.tri:last-child{
-    left: 300px;
-    top: 300px;
-    transform: translate(-50%, 3%) rotate(180deg);
-}
-
-.cer{
-    position: absolute;
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    background-color: greenyellow;
-    left: 300px;
-    top: 300px;
-    transform: translate(-50%, -50%);
-    z-index: 2;
-}
-
-.cer span{
-    width: 70px;
-    top: -30%;
-    transform: translate(45px, 45px);
-}
-
-.tritra{
-    position: absolute;
-}
-
-.tritra::before {
-    content: '';
-    position: absolute;
-    height: 0;
-    width: 0;
-    border-bottom: 30px solid blue;
-    border-right: 125px solid transparent;
-    border-left: 125px solid transparent;
-    z-index: 1;
-}
-
-.tritra::after{
-    content: '';
-    position: absolute;
-    top: 29.2px;
-    height: 0;
-    width: 148px;
-    border-bottom: 50px solid blue;
-    border-right: 50px solid transparent;
-    border-left: 50px solid transparent;
-    transform: rotate(180deg);
-}
-
-.tritra span{
-    width: 185px;
-    transform: translate(35px, 30px);
-    z-index: 3;
-}
-
-.tritra:nth-child(n+3) span{
-    transform: scale(-1) translate(-35px, -30px);
-}
-
-.tritra:first-child{
-    top: 276px;
-    left: 100px;
-    transform: rotate(-45deg);
-}
-
-.tritra:nth-child(2){
-    top: 100px;
-    left: 324px;
-    transform: rotate(45deg);
-}
-
-.tritra:nth-child(4){
-    top: 500px;
-    left: 276px;
-    transform: rotate(-135deg);
-}
-
-.tritra:last-child{
-    top: 324px;
-    left: 500px;
-    transform: rotate(135deg);
-}
-
-.tra{
-    position: absolute;
-    height: 0;
-    width: 127px;
-    border-bottom: 50px solid yellow;
-}
-
-.tra span{
-    width: 95%;
-    transform: translate(68px, 25px);
-}
-
-.tra:nth-child(-n+5) span{
-    transform: scale(-1) translate(-68px, -25px);
-}
-
-.tra.m{
-    border-right: 30px solid transparent;
-    border-left: 10px solid transparent;
-}
-
-.tra.n{
-    border-right: 10px solid transparent;
-    border-left: 30px solid transparent;
-}
-
-.tra:first-child{
-    top: 212px;
-    left: 38px;
-    transform: rotate(121.5deg);
-}
-
-.tra:nth-child(2){
-    top: 97px;
-    left: 153px;
-    transform: rotate(148.5deg);
-}
-
-.tra:nth-child(3){
-    top: 97px;
-    left: 279px;
-    transform: rotate(211.5deg);
-}
-
-.tra:nth-child(4){
-    top: 212px;
-    left: 396px;
-    transform: rotate(238.5deg);
-}
-
-.tra:nth-child(6){
-    top: 340px;
-    left: 39px;
-    transform: rotate(418.5deg);
-}
-
-.tra:nth-child(7){
-    top: 454px;
-    left: 154px;
-    transform: rotate(391.5deg);
-}
-
-.tra:nth-child(8){
-    top: 452px;
-    left: 280px;
-    transform: rotate(328.5deg);
-}
-
-.tra:last-child{
-    top: 337px;
-    left: 395px;
-    transform: rotate(-58.5deg);
-}
-</style>

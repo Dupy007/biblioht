@@ -19,6 +19,12 @@ Route::get('/', function () {
 Route::post('/newuser', [App\Http\Controllers\UserController::class, 'store']);
 Auth::routes();
 Route::middleware(['auth'])->group(function () {
+    Route::resource('plf/category', App\Http\Controllers\CategoryController::class);
+    Route::resource('plf/pyramid', App\Http\Controllers\PyramidController::class);
+    Route::resource('plf/user', App\Http\Controllers\UserController::class);
+    Route::resource('plf/userpyramid', App\Http\Controllers\UserPyramidController::class);
+    Route::get('plf/mypyramid', [App\Http\Controllers\UserPyramidController::class, 'mypyramid']);
+
     Route::get('session', function () { return ['auth' => Auth::user()]; });
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
     Route::get('{any}', function () { return view('app'); })->where('any','.*');

@@ -42,6 +42,7 @@ export default{
     data(){
         return{
             userpyramid:{
+                id:null,
                 user_id:    null,
                 pyramid_id: null,
                 position:   null,
@@ -60,7 +61,7 @@ export default{
     },
     methods:{
         async showuserpyramid(){
-            await axios.get('/api/userpyramid/'+this.$route.params.id).then(response=>{
+            await axios.get('/plf/userpyramid/'+this.$route.params.id).then(response=>{
                 this.userpyramids = response.data
                 for (let index = 1; index < 16; index++) {
                     let userpyramid = {
@@ -70,6 +71,7 @@ export default{
                                 _method:"patch"
                             };
                     if (response.data[index]) {
+                        userpyramid.id =  response.data[index].pyramid_user_id;
                         userpyramid.user_id =  response.data[index].user_id;
                     }
                     this.userpyramids[index] = userpyramid;
@@ -80,7 +82,7 @@ export default{
             })
         },
         async update(userpyramid){
-            await axios.post('/api/userpyramid/'+this.$route.params.id, userpyramid).then(response=>{
+            await axios.post('/plf/userpyramid/'+userpyramid.id, userpyramid).then(response=>{
                 // this.$router.push({name:"pyramidList"})
                 this.setBackgroundColor('s');
             }).catch(error=>{
@@ -97,7 +99,7 @@ export default{
             })
         },
         async getUsers(){
-            await axios.get('/api/user').then(response=>{
+            await axios.get('/plf/user').then(response=>{
                 this.users = response.data
             }).catch(error=>{
                 console.log(error)

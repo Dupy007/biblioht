@@ -76,7 +76,7 @@ export default{
     },
     methods:{
         async create(){
-            await axios.post('/api/user', this.user).then(response=>{
+            await axios.post('/plf/user', this.user).then(response=>{
                 this.$router.push({name:"userList"})
             }).catch(error=>{
                 var theeerrors= [];
