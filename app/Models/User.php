@@ -25,6 +25,8 @@ class User extends Authenticatable
         'code',
         'parrain',
         'type_account',
+        'carte_identite',
+        'departement',
     ];
 
     /**

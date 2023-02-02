@@ -9,7 +9,7 @@ class Pyramid extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id','category_id','expire_at'];
+    protected $fillable = ['user_id','category_id','expire_at','description'];
 
     public function user()
     {

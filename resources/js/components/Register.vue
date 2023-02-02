@@ -41,6 +41,20 @@
                             </div>
                             <div class="col-12 mb-2">
                                 <div class="form-group">
+                                    <label>Departement</label>
+                                    <select  class="form-control " v-model="user.departement">
+                                        <option v-for="item in departements" v-bind:value="item">{{ item }}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-12 mb-2">
+                                <div class="form-group">
+                                    <label>Carte d'identité</label>
+                                    <input type="file" class="form-control " v-on:change="onFileChange" accept="image/*" >
+                                </div>
+                            </div>
+                            <div class="col-12 mb-2">
+                                <div class="form-group">
                                     <label>Password</label>
                                     <input type="password" class="form-control " v-model="user.password">
                                 </div>
@@ -79,13 +93,23 @@ export default{
                 type_account:"user",
                 password:"",
                 password_confirmation:"",
+                carte_identite:null,
+                departement:"",
             },
             errors:[],
+            departements:[ "Artibonite","Centre","Grand'Anse","Nippes","Nord","Nord-Est","Nord-Ouest","Ouest","Sud","Sud-Est","Autre"],
         }
     },
     methods:{
+        onFileChange(e){
+            console.log(e.target.files[0]);
+            this.user.carte_identite = e.target.files[0];
+        },
         async create(){
-            await axios.post('/newuser', this.user).then(response=>{
+            const config = {
+                    headers: { 'content-type': 'multipart/form-data' }
+                }
+            await axios.post('/newuser', this.user,config).then(response=>{
                 axios.get('/sanctum/csrf-cookie').then(response => {
                     axios.post('/login', this.user ).then(response =>{
                                     window.location.replace('/home');

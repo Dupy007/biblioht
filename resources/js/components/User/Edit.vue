@@ -57,6 +57,14 @@
                                 </div>
                             </div>
                             <div class="col-12 mb-2">
+                                <div class="form-group">
+                                    <label>Departement</label>
+                                    <select  class="form-control " v-model="user.departement">
+                                        <option v-for="item in departements" v-bind:value="item">{{ item }}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-12 mb-2">
                                 <button type="submit" class="btn btn-primary">Update</button>
                             </div>
                         </div>
@@ -79,10 +87,12 @@ export default{
                 code:"",
                 parrain:"",
                 type_account:"",
+                departement:"",
                 _method:"patch"
             },
             errors:[],
             codeparrain:null,
+            departements:[ "Artibonite","Centre","Grand'Anse","Nippes","Nord","Nord-Est","Nord-Ouest","Ouest","Sud","Sud-Est","Autre"],
         }
     },
     mounted(){
@@ -91,13 +101,14 @@ export default{
     methods:{
         async showuser(){
             await axios.get('/plf/user/'+this.$route.params.id).then(response=>{
-                const { name,mobile_no,email,code,type_account,parrain} = response.data
+                const { name,mobile_no,email,code,type_account,parrain,departement} = response.data
                 this.user.name = name
                 this.user.mobile_no = mobile_no
                 this.user.email = email
                 this.user.code = code
                 this.user.parrain = this.codeparrain = parrain
                 this.user.type_account = type_account
+                this.user.departement = departement
             }).catch(error=>{
                 console.log(error)
             })

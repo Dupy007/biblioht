@@ -21,7 +21,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::orderBy('id', 'desc')->get(['id','name','mobile_no','code','type_account','email','parrain']);
+        $users = User::orderBy('id', 'desc')->get();
         return response()->json($users);
     }
 
@@ -44,6 +44,22 @@ class UserController extends Controller
                 ->get();
                 if ($users->count()>=2) {
                     return $users;
+                }
+            }
+        }
+        return false;
+    }
+    private function canparrain($data){
+        if (!empty($data)) {
+            $parrain=$data["parrain"];
+            $id=$data["id"];
+            if (!empty($parrain)) {
+                $user = User::where([['code', $parrain],
+                                    ($id? ['id','<>',$id ] :['code', $parrain])])
+                ->first();
+                $userpyramid = UserPyramid::where('user_id',$user->id)->orderBy('created_at','desc')->first();
+                if (!empty($userpyramid) && $userpyramid->position<=7) {
+                    return true;
                 }
             }
         }
@@ -85,7 +101,12 @@ class UserController extends Controller
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'type_account' => ['string'],
             'parrain' => ['nullable','exists:users,code'],
+            'departement' => ['required', 'string', 'max:255'],
+            'carte_identite' => ['required', 'image', 'mimes:png,jpg,jpeg'],
         ]);
+        $fileName = time().'.'.$request->carte_identite->getClientOriginalExtension();
+        $request->carte_identite->storeAs('images', $fileName);
+
         $this->therequest = array('parrain' => $request->input('parrain'),'id'=>null);
         $validatedData->after(function ($validatedData) {
             $val= $this->checkparrain($this->therequest);
@@ -94,9 +115,15 @@ class UserController extends Controller
                     'parrain', 'This code has already sponsored two people!',
                 );
             }
+            $can= $this->canparrain($this->therequest);
+            if ($can) {
+                $validatedData->errors()->add(
+                    'parrain', 'This code cannot refer yet!',
+                );
+            }
         });
         $validatedData = $validatedData->validate();
-        $user = $this->createUser($validatedData);
+        $user = $this->createUser($validatedData,$fileName);
         $messages[]= 'User Created Successfully!!!';
         $userPyramidParrain = $this->getUserPyramid($user->parrain);
         if ($userPyramidParrain) {
@@ -167,6 +194,7 @@ class UserController extends Controller
             'mobile_no' => ['required', 'numeric', 'digits_between:7,12'],
             'type_account' => ['string'],
             'parrain' => ['nullable','exists:users,code'],
+            'departement' => ['required', 'string', 'max:255'],
         ]);
         $this->therequest = array('parrain' => $request->input('parrain'),'id'=>$user->id);
         $validatedData->after(function ($validatedData) {
@@ -174,6 +202,12 @@ class UserController extends Controller
             if ($val) {
                 $validatedData->errors()->add(
                     'parrain', 'This code has already sponsored two people!',
+                );
+            }
+            $can= $this->canparrain($this->therequest);
+            if ($can) {
+                $validatedData->errors()->add(
+                    'parrain', 'This code cannot refer yet!',
                 );
             }
         });
@@ -236,7 +270,7 @@ class UserController extends Controller
      * @param  array  $data
      * @return \App\Models\User
      */
-    protected function createUser(array $data)
+    protected function createUser($data,$filename=null)
     {
         return User::create([
             'name' => $data['name'],
@@ -246,6 +280,8 @@ class UserController extends Controller
             'password' => Hash::make($data['password']),
             'type_account' => $data['type_account'],
             'parrain' => $data['parrain'],
+            'carte_identite' => $filename?$filename:$data['carte_identite'],
+            'departement' => $data['departement'],
         ]);
     }
 }

@@ -23,6 +23,8 @@
                                     <th>Code</th>
                                     <th>Code Parrain</th>
                                     <th>Type</th>
+                                    <th>Departement</th>
+                                    <!-- <th>Carte d'identité</th> -->
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -35,6 +37,8 @@
                                     <td>{{ user.code }}</td>
                                     <td>{{ user.parrain }}</td>
                                     <td>{{ user.type_account }}</td>
+                                    <td>{{ user.departement }}</td>
+                                    <!-- <td> <img v-bind:src="'/storage/app/images/'+user.carte_identite" v-bind:alt=" user.name " srcset=""></td> -->
                                     <td>
                                         <router-link :to='{ name:"userEdit" , params:{ id:user.id } }' class="btn btn-success">Edit</router-link>
                                         <button type="button" @click="deleteuser(user.id)" class="btn btn-danger">Delete</button>

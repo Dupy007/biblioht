@@ -30,12 +30,12 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-12 mb-2">
+                            <!-- <div class="col-12 mb-2">
                                 <div class="form-group">
                                     <label>Expire</label>
                                     <input type="text" class="form-control" v-model="pyramid.expire_at">
                                 </div>
-                            </div>
+                            </div> -->
                             <div class="col-12 mb-2">
                                 <button type="submit" class="btn btn-primary">Save</button>
                             </div>
