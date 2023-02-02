@@ -18,10 +18,9 @@ class UserPyramidController extends Controller
      */
     public function index()
     {
-        $UserPyramids = UserPyramid::with(['user','pyramid'=>['category']])->get();
+        $UserPyramids = UserPyramid::with(['user','pyramid'=>['category']])->orderBy('pyramid_id', 'desc')->get();
         $tmp=array();
         foreach ($UserPyramids as $key => $UserPyramid) {
-            // $tmp[$UserPyramid->pyramid_id][]=$UserPyramid;
             $tmp[$UserPyramid->pyramid_id][$UserPyramid->id]=array(
                                                                     "pyramid_user_id"=>$UserPyramid->id,
                                                                     "pyramid_id"=>$UserPyramid->pyramid_id,
@@ -34,7 +33,6 @@ class UserPyramidController extends Controller
                                                                     "category_name"=>$UserPyramid->pyramid->category->name,
                                                                 );
         }
-
         return response()->json($tmp);
     }
 
@@ -217,7 +215,7 @@ class UserPyramidController extends Controller
                                                     "user_id"           =>$UserPyramid->user_id,
                                                 );
         }
-        
+
         $pyramid2 = Pyramid::create(['category_id'=>$category_id,'user_id'=>$tmp[2]['user_id']]);
         $pyramid3 = Pyramid::create(['category_id'=>$category_id,'user_id'=>$tmp[3]['user_id']]);
 

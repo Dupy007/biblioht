@@ -6,46 +6,44 @@
                     <div class="card-header">Dashboard</div>
                     <div class="card-body">
                         <div v-for="(userpyramid,key) in userpyramids" :key="key">
-                            <div class="row row-cols-1 row-cols-sm-1 row-cols-md-2 g-2">
-                            <div class="col">
-                                <div class="card shadow-sm">
-                                    <div>
-                                        <div class="position-relative">
-                                            <div class="position-absolute top-0 start-0 text-danger">{{ thecategoryname(userpyramid) }}</div>
-                                            <div class="position-absolute top-0 end-0 text-danger"> #{{  thepyramidid(userpyramid) }}</div>
-                                        </div>
-                                        <div class="position-relative mt-3">
-                                            <div class=" top-50 start-0">
-                                                <div class="box">
-                                                    <div class="tra m"><span>{{ theposition(userpyramid,8).user_name }}</span></div>
-                                                    <div class="tra n"><span>{{ theposition(userpyramid,9).user_name }}</span></div>
-                                                    <div class="tra m"><span>{{ theposition(userpyramid,10).user_name }}</span></div>
-                                                    <div class="tra n"><span>{{ theposition(userpyramid,11).user_name }}</span></div>
-                                                    <div class="center-2">
-                                                        <div class="tritra"><span>{{ theposition(userpyramid,4).user_name }}</span></div>
-                                                        <div class="tritra"><span>{{ theposition(userpyramid,5).user_name }}</span></div>
-                                                        <div class="center">
-                                                            <div class="tri"><span  data-bs-toggle="modal" data-bs-target="#exampleModal" @click="loadDataModal(2,userpyramid)">{{ theposition(userpyramid,2).user_name }}</span></div>
-                                                            <div class="cer"><span  data-bs-toggle="modal" data-bs-target="#exampleModal" @click="loadDataModal(1,userpyramid)">{{ theposition(userpyramid,1).user_name }}</span></div>
-                                                            <div class="tri"><span  data-bs-toggle="modal" data-bs-target="#exampleModal" @click="loadDataModal(3,userpyramid)">{{ theposition(userpyramid,3).user_name }}</span></div>
-                                                        </div>
-                                                        <div class="tritra"><span>{{ theposition(userpyramid,6).user_name }}</span></div>
-                                                        <div class="tritra"><span>{{ theposition(userpyramid,7).user_name }}</span></div>
+                            <div class="row">
+                            <div class="col-lg-6 py-4">
+                                <div>
+                                    <div class="position-relative">
+                                        <div class="position-absolute top-0 start-0 text-danger">{{ thecategoryname(userpyramid) }}</div>
+                                        <div class="position-absolute top-0 end-0 text-danger"> #{{  thepyramidid(userpyramid) }}</div>
+                                    </div>
+                                    <div class="position-relative mt-3">
+                                        <div class="top-50 start-0">
+                                            <div class="box">
+                                                <div class="tra m"><span data-bs-toggle="modal" data-bs-target="#exampleModal" @click="loadDataModal(8,userpyramid)">{{ theposition(userpyramid,8).user_name }}</span></div>
+                                                <div class="tra n"><span data-bs-toggle="modal" data-bs-target="#exampleModal" @click="loadDataModal(9,userpyramid)">{{ theposition(userpyramid,9).user_name }}</span></div>
+                                                <div class="tra m"><span data-bs-toggle="modal" data-bs-target="#exampleModal" @click="loadDataModal(10,userpyramid)">{{ theposition(userpyramid,10).user_name }}</span></div>
+                                                <div class="tra n"><span data-bs-toggle="modal" data-bs-target="#exampleModal" @click="loadDataModal(11,userpyramid)">{{ theposition(userpyramid,11).user_name }}</span></div>
+                                                <div class="center-2">
+                                                    <div class="tritra"><span data-bs-toggle="modal" data-bs-target="#exampleModal" @click="loadDataModal(4,userpyramid)">{{ theposition(userpyramid,4).user_name }}</span></div>
+                                                    <div class="tritra"><span data-bs-toggle="modal" data-bs-target="#exampleModal" @click="loadDataModal(5,userpyramid)">{{ theposition(userpyramid,5).user_name }}</span></div>
+                                                    <div class="center">
+                                                        <div class="tri"><span  data-bs-toggle="modal" data-bs-target="#exampleModal" @click="loadDataModal(2,userpyramid)">{{ theposition(userpyramid,2).user_name }}</span></div>
+                                                        <div class="cer"><span  data-bs-toggle="modal" data-bs-target="#exampleModal" @click="loadDataModal(1,userpyramid)">{{ theposition(userpyramid,1).user_name }}</span></div>
+                                                        <div class="tri"><span  data-bs-toggle="modal" data-bs-target="#exampleModal" @click="loadDataModal(3,userpyramid)">{{ theposition(userpyramid,3).user_name }}</span></div>
                                                     </div>
-                                                    <div class="tra n"><span>{{ theposition(userpyramid,12).user_name }}</span></div>
-                                                    <div class="tra m"><span>{{ theposition(userpyramid,13).user_name }}</span></div>
-                                                    <div class="tra n"><span>{{ theposition(userpyramid,14).user_name }}</span></div>
-                                                    <div class="tra m"><span>{{ theposition(userpyramid,15).user_name }}</span></div>
+                                                    <div class="tritra"><span data-bs-toggle="modal" data-bs-target="#exampleModal" @click="loadDataModal(6,userpyramid)">{{ theposition(userpyramid,6).user_name }}</span></div>
+                                                    <div class="tritra"><span data-bs-toggle="modal" data-bs-target="#exampleModal" @click="loadDataModal(7,userpyramid)">{{ theposition(userpyramid,7).user_name }}</span></div>
                                                 </div>
+                                                <div class="tra n"><span data-bs-toggle="modal" data-bs-target="#exampleModal" @click="loadDataModal(12,userpyramid)">{{ theposition(userpyramid,12).user_name }}</span></div>
+                                                <div class="tra m"><span data-bs-toggle="modal" data-bs-target="#exampleModal" @click="loadDataModal(13,userpyramid)">{{ theposition(userpyramid,13).user_name }}</span></div>
+                                                <div class="tra n"><span data-bs-toggle="modal" data-bs-target="#exampleModal" @click="loadDataModal(14,userpyramid)">{{ theposition(userpyramid,14).user_name }}</span></div>
+                                                <div class="tra m"><span data-bs-toggle="modal" data-bs-target="#exampleModal" @click="loadDataModal(15,userpyramid)">{{ theposition(userpyramid,15).user_name }}</span></div>
                                             </div>
                                         </div>
-                                        <div class="position-relative mt-4">
-                                            <div class="position-absolute bottom-0 start-0 text-danger">{{ created_at(userpyramid) }}</div>
-                                            <div class="position-absolute bottom-0 end-0 text-danger">{{ expire_at(userpyramid) }}</div>
-                                        </div>
                                     </div>
-                                    <router-link :to='{ name:"userpyramidEdit" , params:{ id:thepyramidid(userpyramid) } }' class="btn btn-success">Edit</router-link>
+                                    <div class="position-relative mt-4">
+                                        <div class="position-absolute bottom-0 start-0 text-danger">{{ created_at(userpyramid) }}</div>
+                                        <div class="position-absolute bottom-0 end-0 text-danger">{{ expire_at(userpyramid) }}</div>
+                                    </div>
                                 </div>
+                                <router-link :to='{ name:"userpyramidEdit" , params:{ id:thepyramidid(userpyramid) } }' class="btn btn-success">Edit</router-link>
                             </div>
                         </div>
                     </div>
@@ -142,7 +140,7 @@
             checkForm:function(e) {
                 if(this.userpyramidmodal.user_id  ) this.update();
                 this.getUserpyramids();
-                e.preventDefault(); 
+                e.preventDefault();
             },
             async update(){
                 let userpyramid={
@@ -209,7 +207,7 @@
                 }
                 document.querySelector('body').style.backgroundColor = backgroundColor.value;
                 setTimeout(() => { document.querySelector('body').style.backgroundColor =null; }, 3000);
-                
+
             }
         },
     }

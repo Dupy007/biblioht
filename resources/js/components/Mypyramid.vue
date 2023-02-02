@@ -77,15 +77,18 @@
                 isend:false,
                 iscomplete:false,
                 pyramid_id:null,
+                auth:null,
             }
         },
         mounted(){
-            this.getUserpyramids()
+            this.getUserpyramids();
+            this.auth = JSON.parse(localStorage.auth);
         },
         methods:{
             async nextpyramid(){
-                await axios.get('/plf/nextpyramid/'+this.pyramid_id).then(response=>{
+                await axios.get('/plf/nextpyramid/'+this.auth.id).then(response=>{
                     console.log(response)
+                    alert(response.data.message)
                 }).catch(error=>{
                     console.log(error)
                     this.userpyramids = []
