@@ -2,7 +2,7 @@
     <main>
         <nav class="navbar navbar-expand-md navbar-dark bg-dark shadow-sm">
             <div class="container-fluid">
-                <router-link to="/" class="navbar-brand" href="#">Pyramide de la liberte financiere (PLF)</router-link>
+                <router-link to="/home" class="navbar-brand" href="#">Pyramide de la liberte financiere (PLF)</router-link>
 
                 <button class="navbar-toggler bg-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                     <span class="navbar-toggler-icon"></span>

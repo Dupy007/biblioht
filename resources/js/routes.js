@@ -20,7 +20,7 @@ export const routes = [
     },
     {
         name: 'dashboard',
-        path: '/',
+        path: '/home',
         component: Dashboard
     },
     {

@@ -63,7 +63,7 @@ export default{
         async login(){
             await axios.get('/sanctum/csrf-cookie').then(response => {
                 axios.post('/login', this.user).then(response=>{
-                    window.location.replace('/home');
+                    window.location.reload('/index');
                 }).catch(error=>{
                     var theeerrors= [];
                     theeerrors = error.response.data.errors;
