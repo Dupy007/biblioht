@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\UserPyramid;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -62,6 +62,8 @@ class UserController extends Controller
                     return true;
                 }
             }
+            else
+                return true;
         }
         return false;
     }
@@ -69,8 +71,8 @@ class UserController extends Controller
         if (!empty($code)) {
             $user = User::where('code', $code)->first();
             if ($user->count()>0) {
-                $userpyramid = UserPyramid::where(
-                    'user_id',$user->id)->get();
+                $userpyramid = UserPyramid::where('user_id',$user->id) ->orderBy("created_at","desc")->get();
+                if ($userpyramid->count()<=0) return false;
                 return $userpyramid;
             }
         }
@@ -116,7 +118,7 @@ class UserController extends Controller
                 );
             }
             $can= $this->canparrain($this->therequest);
-            if ($can) {
+            if (!$can) {
                 $validatedData->errors()->add(
                     'parrain', 'This code cannot refer yet!',
                 );
@@ -124,20 +126,15 @@ class UserController extends Controller
         });
         $validatedData = $validatedData->validate();
         $user = $this->createUser($validatedData,$fileName);
-        $messages[]= 'User Created Successfully!!!';
         $userPyramidParrain = $this->getUserPyramid($user->parrain);
         if ($userPyramidParrain) {
-            $messages[]= 'UserPyramidParrain Successfully!!!';
             $favori = $this->givePosition($userPyramidParrain[0]->position);
             if (!empty($favori)) {
-                $messages[]= 'Favori Successfully!!!';
-                $messages[]= $userPyramidParrain;
                 foreach ($favori as $value) {
                     $checkUserPyramidPosition = UserPyramid::where('pyramid_id',$userPyramidParrain[0]->pyramid_id)
                     ->where('position',$value)
                     ->first();
                     if ((!$checkUserPyramidPosition)) {
-                        $messages[]= 'checkUserPyramidPosition Successfully!!!';
                         $iduser =  User::where('email', $user->email)->first();
                         UserPyramid::create([
                             'pyramid_id'    =>$userPyramidParrain[0]->pyramid_id,
@@ -205,7 +202,7 @@ class UserController extends Controller
                 );
             }
             $can= $this->canparrain($this->therequest);
-            if ($can) {
+            if (!$can) {
                 $validatedData->errors()->add(
                     'parrain', 'This code cannot refer yet!',
                 );
@@ -217,19 +214,15 @@ class UserController extends Controller
         $messages=array();
         if (!empty($user->parrain)) {
             $checkUserPyramid = $this->getUserPyramid($user->code);
-            if (!$checkUserPyramid) {
-                $messages[] = "checuser";
+            if (empty($checkUserPyramid) || !$checkUserPyramid ) {
                 $userPyramidParrain = $this->getUserPyramid($user->parrain);
                 if ($userPyramidParrain) {
-                    $messages[] = "checuserparrain";
                     $favori = $this->givePosition($userPyramidParrain[0]->position);
                     if (!empty($favori)) {
-                        $messages[] = "favori";
                         foreach ($favori as $value) {
                             $checkUserPyramidPosition = UserPyramid::where('pyramid_id',$userPyramidParrain[0]->pyramid_id)
                             ->where('position',$value)->first();
                             if ((!$checkUserPyramidPosition)) {
-                                $messages[] = "checkUserPyramidPosition";
                                 UserPyramid::create([
                                     'pyramid_id'    =>$userPyramidParrain[0]->pyramid_id,
                                     'user_id'       =>$user->id,
@@ -243,7 +236,7 @@ class UserController extends Controller
                 }
             }
         }
-        $messages[] = "User 41 Updated Successfully!!!";
+        $messages[] = "User Updated Successfully!!!";
         return response()->json([
             'message' => $messages,
             'user' => $user
@@ -282,6 +275,35 @@ class UserController extends Controller
             'parrain' => $data['parrain'],
             'carte_identite' => $filename?$filename:$data['carte_identite'],
             'departement' => $data['departement'],
+        ]);
+    }
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function password_change(Request $request)
+    {
+        $messages=array();
+        $user = User::find(Auth::id());
+        $validatedData = Validator::make($request->all(), [
+            'password_old' => ['required', 'string', 'min:8'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+        ]);
+        $validatedData->after(function ($validatedData) use ($user,$request) {
+            if(count($validatedData->errors())==0)
+                if ( !(Hash::check($request['password_old'], $user->password))) {
+                    $validatedData->errors()->add(
+                        'password', 'Passwords do not match! ',
+                    );
+                }
+        });
+        $validatedData = $validatedData->validate();
+        $user->fill(['password'=>Hash::make($validatedData['password'])])->save();
+        return response()->json([
+            'message' =>'Password changed',
+            'user' => $user
         ]);
     }
 }

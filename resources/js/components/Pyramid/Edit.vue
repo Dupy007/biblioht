@@ -76,7 +76,6 @@ export default{
                 this.pyramid.category_id = category_id
                 this.pyramid.expire_at = expire_at
             }).catch(error=>{
-                console.log(error)
             })
         },
         async update(){
@@ -91,14 +90,12 @@ export default{
                         this.errors.push(element[0]);
                     }
                 }
-                console.log(error)
             })
         },
         async getUsers(){
             await axios.get('/plf/user').then(response=>{
                 this.users = response.data
             }).catch(error=>{
-                console.log(error)
                 this.users = []
             })
         },
@@ -106,7 +103,6 @@ export default{
             await axios.get('/plf/category').then(response=>{
                 this.categories = response.data
             }).catch(error=>{
-                console.log(error)
                 this.categories = []
             })
         },

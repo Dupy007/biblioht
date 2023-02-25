@@ -14,7 +14,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::orderBy('id', 'desc')->get(['id','name','valeur','description']);
+        $categories = Category::orderBy('id', 'desc')->get();
         return response()->json($categories);
     }
 
@@ -39,6 +39,9 @@ class CategoryController extends Controller
         $validatedData = $request->validate([
             'name' => ['required', 'string'],
             'valeur' => ['required', 'numeric'],
+            'description' => ['nullable','string'],
+            'category_name_account' => ['nullable','string'],
+            'category_number_account' => ['nullable','string'],
         ]);
         $category = Category::create($validatedData);
         return response()->json([
@@ -81,6 +84,9 @@ class CategoryController extends Controller
         $validatedData = $request->validate([
             'name' => ['required', 'string'],
             'valeur' => ['required', 'numeric'],
+            'description' => ['nullable','string'],
+            'category_name_account' => ['nullable','string'],
+            'category_number_account' => ['nullable','string'],
         ]);
         $category->fill($validatedData)->save();
 

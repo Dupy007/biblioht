@@ -124,7 +124,6 @@ export default{
                         this.errors.push(element[0]);
                     }
                 }
-                console.log('error =>' ,error);
             })
         },
         checkForm:function(e) {

@@ -28,7 +28,7 @@
                                     <td>{{ pyramid.expire_at }}</td>
                                     <td>
                                         <router-link :to='{ name:"pyramidEdit" , params:{ id:pyramid.id } }' class="btn btn-success">Edit</router-link>
-                                        <button type="button" @click="deletepyramid(pyramid.id)" class="btn btn-danger">Delete</button>
+                                        <button hidden type="button" @click="deletepyramid(pyramid.id)" class="btn btn-danger">Delete</button>
                                     </td>
                                 </tr>
                             </tbody>
@@ -61,7 +61,6 @@ export default {
             await axios.get('/plf/pyramid').then(response=>{
                 this.pyramids = response.data
             }).catch(error=>{
-                console.log(error)
                 this.pyramids = []
             })
         },
@@ -70,7 +69,6 @@ export default {
                 axios.delete('/plf/pyramid/'+id).then(response=>{
                     this.getPyramids()
                 }).catch(error=>{
-                    console.log(error)
                 })
             }
         }

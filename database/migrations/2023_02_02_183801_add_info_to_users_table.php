@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->string('carte_identite')->nullable();
-            $table->string('departement')->nullable();;
+            $table->string('departement')->nullable();
         });
     }
 

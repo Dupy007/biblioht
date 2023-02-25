@@ -90,6 +90,8 @@ class PyramidController extends Controller
         $validatedData = $request->validate([
             'user_id' => ['required', 'numeric'],
             'category_id' => ['required', 'numeric'],
+            'pyramid_name_account' => ['string'],
+            'pyramid_number_account' => ['string'],
         ]);
         $pyramid->fill($validatedData)->save();
 
@@ -120,8 +122,22 @@ class PyramidController extends Controller
     public function endpyramid(int $id)
     {
         $pyramid= Pyramid::where('id',$id)
-                ->update(['expire_at'=> \Carbon\Carbon::now()]);
+                ->update([  'expire_at' => \Carbon\Carbon::now()]);
         UserPyramidController::subdivise($id);
+        return response()->json([
+            'message' => 'Pyramid Updated Successfully!!!',
+            'pyramid' => $pyramid
+        ]);
+    }
+        /**
+     * Update the specified resource in storage.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function confirmpayment(int $id)
+    {
+        $pyramid= Pyramid::where('id',$id)
+                ->update(['payment_verified_at'   => \Carbon\Carbon::now()]);
         return response()->json([
             'message' => 'Pyramid Updated Successfully!!!',
             'pyramid' => $pyramid

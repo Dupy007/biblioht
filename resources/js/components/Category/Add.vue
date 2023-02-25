@@ -32,6 +32,18 @@
                                     <input type="text" class="form-control" v-model="category.description">
                                 </div>
                             </div>
+                            <div class="col-12 mb-2 ">
+                                <div class="form-group" >
+                                    <label>Name account</label>
+                                    <input class="form-control" type="text" v-model="category.category_name_account" >
+                                </div>
+                            </div>
+                            <div class="col-12 mb-2 ">
+                                <div class="form-group" >
+                                    <label>Number account</label>
+                                    <input class="form-control" type="text" v-model="category.category_number_account">
+                                </div>
+                            </div>
                             <div class="col-12 mb-2">
                                 <button type="submit" class="btn btn-primary">Save</button>
                             </div>
@@ -51,7 +63,9 @@ export default{
             category:{
                 name:"",
                 valeur:"",
-                description:""
+                description:"",
+                category_name_account:"",
+                category_number_account:"",
             },
             errors:[],
         }
@@ -69,7 +83,6 @@ export default{
                         this.errors.push(element[0]);
                     }
                 }
-                console.log('error =>' ,error);
             })
         },
         checkForm:function(e) {

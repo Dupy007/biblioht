@@ -5,13 +5,13 @@
                 <div class="card">
                     <div class="card-header">Dashboard</div>
                     <div class="card-body">
-                        <div v-for="(userpyramid,key) in userpyramids" :key="key">
+                        <div >
                             <div class="row">
-                            <div class="col-lg-6 py-4">
+                            <div class="col-lg-6 py-4 my-2 card" v-for="(userpyramid,key) in userpyramids" :key="key">
                                 <div>
                                     <div class="position-relative">
-                                        <div class="position-absolute top-0 start-0 text-danger">{{ thecategoryname(userpyramid) }}</div>
-                                        <div class="position-absolute top-0 end-0 text-danger"> #{{  thepyramidid(userpyramid) }}</div>
+                                        <div class="position-absolute top-0 start-0 text-danger"><h1>{{ thecategoryname(userpyramid) }}</h1></div>
+                                        <div class="position-absolute top-0 end-0 text-danger"><h1> #{{  thepyramidid(userpyramid) }}</h1></div>
                                     </div>
                                     <div class="position-relative mt-3">
                                         <div class="top-50 start-0">
@@ -39,13 +39,16 @@
                                         </div>
                                     </div>
                                     <div class="position-relative mt-4">
-                                        <div class="position-absolute bottom-0 start-0 text-danger">{{ created_at(userpyramid) }}</div>
-                                        <div class="position-absolute bottom-0 end-0 text-danger">{{ expire_at(userpyramid) }}</div>
+                                        <div class="position-absolute bottom-0 start-0 text-danger"><h1>{{ created_at(userpyramid) }}</h1></div>
+                                        <div class="position-absolute bottom-0 end-0 text-danger"><h1>{{ expire_at(userpyramid) }}</h1></div>
                                     </div>
                                 </div>
                                 <router-link :to='{ name:"userpyramidEdit" , params:{ id:thepyramidid(userpyramid) } }' class="btn btn-success">Edit</router-link>
                             </div>
                         </div>
+                    </div>
+                    <div v-if="userpyramids.length <= 0" class="col-12 mb-2 text-center">
+                        <p>No circle</p>
                     </div>
                 </div>
             </div>
@@ -58,7 +61,7 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Update position</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
@@ -102,7 +105,6 @@
                 userpyramidmodal:[],
                 position:null,
                 users:[],
-                render: true,
             }
         },
         mounted(){
@@ -110,12 +112,6 @@
             this.getUsers()
         },
         methods:{
-            reload() {
-                this.render = false;
-                this.$nextTick(() => {
-                    this.render = true;
-                });
-            },
             loadDataModal(position,userpyramid){
                 this.position = position;
                 this.userpyramidmodal = this.theposition(userpyramid,position);
@@ -123,9 +119,7 @@
             async getUserpyramids(){
                 await axios.get('/plf/userpyramid').then(response=>{
                     this.userpyramids = response.data
-                    // console.log(response.data);
                 }).catch(error=>{
-                    console.log(error)
                     this.userpyramids = []
                 })
             },
@@ -133,7 +127,6 @@
                 await axios.get('/plf/user').then(response=>{
                     this.users = response.data
                 }).catch(error=>{
-                    console.log(error)
                     this.users = []
                 })
             },
@@ -152,7 +145,6 @@
                 await axios.post('/plf/userpyramid/'+this.userpyramidmodal.pyramid_user_id, userpyramid).then(response=>{
                     this.setBackgroundColor('s');
                 }).catch(error=>{
-                    console.log(error)
                     this.setBackgroundColor('f');
                 })
             },

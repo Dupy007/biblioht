@@ -38,6 +38,7 @@
                                 {{ auth.name }} ( {{ auth.code }} )
                             </a>
                             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                <router-link to="/profil" class=" dropdown-item">Profil</router-link>
                                 <form @submit.prevent="logout">
                                     <button type="submit" class="dropdown-item">
                                         Logout
@@ -78,7 +79,6 @@
                         localStorage.auth = JSON.stringify(this.auth);
                     })
                     .catch(function (error){
-                        console.log(error);
                     });
             },
         },

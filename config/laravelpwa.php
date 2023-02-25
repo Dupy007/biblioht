@@ -1,12 +1,12 @@
 <?php
 
 return [
-    'name' => 'LaravelPWA',
+    'name' => 'PLF App',
     'manifest' => [
-        'name' => env('APP_NAME', 'My PWA App'),
-        'short_name' => 'PWA',
-        'start_url' => '/',
-        'background_color' => '#ffffff',
+        'name' => env('APP_NAME', 'Pyramide de la liberte financiere'),
+        'short_name' => 'PLF',
+        'start_url' => '/index',
+        'background_color' => '#0f0f0f',
         'theme_color' => '#000000',
         'display' => 'standalone',
         'orientation'=> 'any',

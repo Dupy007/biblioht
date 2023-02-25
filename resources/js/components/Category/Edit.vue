@@ -32,6 +32,18 @@
                                     <input type="text" class="form-control" v-model="category.description">
                                 </div>
                             </div>
+                            <div class="col-12 mb-2 ">
+                                <div class="form-group" >
+                                    <label>Name account</label>
+                                    <input class="form-control" type="text" v-model="category.category_name_account" >
+                                </div>
+                            </div>
+                            <div class="col-12 mb-2 ">
+                                <div class="form-group" >
+                                    <label>Number account</label>
+                                    <input class="form-control" type="text" v-model="category.category_number_account">
+                                </div>
+                            </div>
                             <div class="col-12 mb-2">
                                 <button type="submit" class="btn btn-primary">Update</button>
                             </div>
@@ -52,6 +64,8 @@ export default{
                 name:"",
                 valeur:"",
                 description:"",
+                category_name_account:"",
+                category_number_account:"",
                 _method:"patch"
             },
             errors:[],
@@ -63,12 +77,13 @@ export default{
     methods:{
         async showCategory(){
             await axios.get('/plf/category/'+this.$route.params.id).then(response=>{
-                const { name,valeur, description} = response.data
+                const { name,valeur, description,category_name_account,category_number_account} = response.data
                 this.category.name = name
                 this.category.valeur = valeur
                 this.category.description = description
+                this.category.category_name_account = category_name_account
+                this.category.category_number_account = category_number_account
             }).catch(error=>{
-                console.log(error)
             })
         },
         async update(){
@@ -83,7 +98,6 @@ export default{
                         this.errors.push(element[0]);
                     }
                 }
-                console.log(error)
             })
         },
         checkForm:function(e) {

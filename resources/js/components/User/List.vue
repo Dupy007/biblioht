@@ -41,7 +41,7 @@
                                     <!-- <td> <img v-bind:src="'/storage/app/images/'+user.carte_identite" v-bind:alt=" user.name " srcset=""></td> -->
                                     <td>
                                         <router-link :to='{ name:"userEdit" , params:{ id:user.id } }' class="btn btn-success">Edit</router-link>
-                                        <button type="button" @click="deleteuser(user.id)" class="btn btn-danger">Delete</button>
+                                        <button hidden type="button" @click="deleteuser(user.id)" class="btn btn-danger">Delete</button>
                                     </td>
                                 </tr>
                             </tbody>
@@ -75,7 +75,6 @@ export default {
             await axios.get('/plf/user').then(response=>{
                 this.users = response.data
             }).catch(error=>{
-                console.log(error)
                 this.users = []
             })
         },
@@ -84,7 +83,6 @@ export default {
                 axios.delete('/plf/user/'+id).then(response=>{
                     this.getUsers()
                 }).catch(error=>{
-                    console.log(error)
                 })
             }
         },

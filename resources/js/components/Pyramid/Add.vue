@@ -79,7 +79,6 @@ export default{
             await axios.get('/plf/category').then(response=>{
                 this.categories = response.data
             }).catch(error=>{
-                console.log(error)
                 this.categories = []
             })
         },
@@ -95,7 +94,6 @@ export default{
                         this.errors.push(element[0]);
                     }
                 }
-                console.log('error =>',error)
             })
         },
         checkForm:function(e) {

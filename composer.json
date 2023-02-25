@@ -13,15 +13,6 @@
         "laravel/ui": "^4.2",
         "silviolleite/laravelpwa": "^2.0"
     },
-    "replace": {
-        "php": "self.version",
-        "guzzlehttp/guzzle": "self.version",
-        "laravel/framework": "self.version",
-        "laravel/sanctum": "self.version",
-        "laravel/tinker": "self.version",
-        "laravel/ui": "self.version",
-        "silviolleite/laravelpwa": "self.version"
-    },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
         "laravel/pint": "^1.0",

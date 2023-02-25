@@ -110,13 +110,11 @@ export default{
                 this.user.type_account = type_account
                 this.user.departement = departement
             }).catch(error=>{
-                console.log(error)
             })
         },
         async update(){
             await axios.post('/plf/user/'+this.$route.params.id, this.user).then(response=>{
                 this.$router.push({name:"userList"})
-                // console.log(response.data);
             }).catch(error=>{
                 var theeerrors= [];
                 theeerrors = error.response.data.errors;
@@ -126,7 +124,6 @@ export default{
                         this.errors.push(element[0]);
                     }
                 }
-                console.log(error)
             })
         },
         checkForm:function(e) {

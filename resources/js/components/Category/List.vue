@@ -17,6 +17,8 @@
                                     <th>Name</th>
                                     <th>Value</th>
                                     <th>Description</th>
+                                    <th>Account Name</th>
+                                    <th>Account Number</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -26,9 +28,11 @@
                                     <td>{{ category.name }}</td>
                                     <td>{{ category.valeur }}</td>
                                     <td>{{ category.description }}</td>
+                                    <td>{{ category.category_name_account }}</td>
+                                    <td>{{ category.category_number_account }}</td>
                                     <td>
                                         <router-link :to='{ name:"categoryEdit" , params:{ id:category.id } }' class="btn btn-success">Edit</router-link>
-                                        <button type="button" @click="deleteCategory(category.id)" class="btn btn-danger">Delete</button>
+                                        <button hidden type="button" @click="deleteCategory(category.id)" class="btn btn-danger">Delete</button>
                                     </td>
                                 </tr>
                             </tbody>
@@ -61,7 +65,6 @@ export default {
             await axios.get('/plf/category').then(response=>{
                 this.categories = response.data
             }).catch(error=>{
-                console.log(error)
                 this.categories = []
             })
         },
@@ -70,7 +73,6 @@ export default {
                 axios.delete('/plf/category/'+id).then(response=>{
                     this.getCategories()
                 }).catch(error=>{
-                    console.log(error)
                 })
             }
         }

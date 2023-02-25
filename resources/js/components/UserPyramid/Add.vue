@@ -71,7 +71,6 @@ export default{
             await axios.get('/api/user').then(response=>{
                 this.users = response.data
             }).catch(error=>{
-                console.log(error)
                 this.users = []
             })
         },
@@ -79,7 +78,6 @@ export default{
             await axios.get('/api/category').then(response=>{
                 this.categories = response.data
             }).catch(error=>{
-                console.log(error)
                 this.categories = []
             })
         },
@@ -95,7 +93,6 @@ export default{
                         this.errors.push(element[0]);
                     }
                 }
-                console.log('error =>',error)
             })
         },
         checkForm:function(e) {

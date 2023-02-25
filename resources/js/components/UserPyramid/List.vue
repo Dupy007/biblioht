@@ -61,7 +61,6 @@ export default {
             await axios.get('/api/pyramid').then(response=>{
                 this.pyramids = response.data
             }).catch(error=>{
-                console.log(error)
                 this.pyramids = []
             })
         },
@@ -70,7 +69,6 @@ export default {
                 axios.delete('/api/pyramid/'+id).then(response=>{
                     this.getPyramids()
                 }).catch(error=>{
-                    console.log(error)
                 })
             }
         }

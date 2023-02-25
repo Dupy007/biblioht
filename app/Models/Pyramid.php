@@ -9,7 +9,7 @@ class Pyramid extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id','category_id','expire_at','description'];
+    protected $fillable = ['user_id','category_id','expire_at','description','pyramid_name_account','pyramid_number_account'];
 
     public function user()
     {
@@ -17,7 +17,7 @@ class Pyramid extends Model
     }
     public function category()
     {
-        return $this->belongsTo(category::class);
+        return $this->belongsTo(Category::class);
     }
     public function userpyramid()
     {

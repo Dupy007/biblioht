@@ -22,17 +22,38 @@ class UserPyramidController extends Controller
         $tmp=array();
         foreach ($UserPyramids as $key => $UserPyramid) {
             $tmp[$UserPyramid->pyramid_id][$UserPyramid->id]=array(
-                                                                    "pyramid_user_id"=>$UserPyramid->id,
-                                                                    "pyramid_id"=>$UserPyramid->pyramid_id,
-                                                                    "created_at"=>$UserPyramid->created_at,
-                                                                    "position"=>$UserPyramid->position,
-                                                                    "user_id"=>$UserPyramid->user_id,
-                                                                    "user_code"=>$UserPyramid->user->code,
-                                                                    "user_name"=>$UserPyramid->user->name,
-                                                                    "user_mobile_no"=>$UserPyramid->user->mobile_no,
-                                                                    "category_name"=>$UserPyramid->pyramid->category->name,
+                                                                    "pyramid_user_id"           =>$UserPyramid->id,
+                                                                    "pyramid_id"                =>$UserPyramid->pyramid_id,
+                                                                    "created_at"                =>$UserPyramid->created_at,
+                                                                    "position"                  =>$UserPyramid->position,
+                                                                    "user_id"                   =>$UserPyramid->user_id,
+                                                                    "user_code"                 =>$UserPyramid->user->code,
+                                                                    "user_name"                 =>$UserPyramid->user->name,
+                                                                    "user_mobile_no"            =>$UserPyramid->user->mobile_no,
+                                                                    "category_name"             =>$UserPyramid->pyramid->category->name,
+                                                                    "expire_at"                  =>$UserPyramid->pyramid->expire_at,
                                                                 );
         }
+        return response()->json($tmp);
+    }
+    public function morepyramid($id)
+    {
+        $UserPyramids = UserPyramid::with(['user','pyramid'=>['category']])->where('category_id','=',$id)->orderBy('pyramid_id', 'desc')->limit(4)->get();
+        $tmp=array();
+        // foreach ($UserPyramids as $key => $UserPyramid) {
+        //     $tmp[$UserPyramid->pyramid_id][$UserPyramid->id]=array(
+        //                                                             "pyramid_user_id"           =>$UserPyramid->id,
+        //                                                             "pyramid_id"                =>$UserPyramid->pyramid_id,
+        //                                                             "created_at"                =>$UserPyramid->created_at,
+        //                                                             "position"                  =>$UserPyramid->position,
+        //                                                             "user_id"                   =>$UserPyramid->user_id,
+        //                                                             "user_code"                 =>$UserPyramid->user->code,
+        //                                                             "user_name"                 =>$UserPyramid->user->name,
+        //                                                             "user_mobile_no"            =>$UserPyramid->user->mobile_no,
+        //                                                             "category_name"             =>$UserPyramid->pyramid->category->name,
+        //                                                             "expire_at"                  =>$UserPyramid->pyramid->expire_at,
+        //                                                         );
+        // }
         return response()->json($tmp);
     }
 
@@ -81,13 +102,16 @@ class UserPyramidController extends Controller
                                     ->where('pyramid_id',intval($UserPyramid))
                                     ->get();
         $tmp=array();
-        $complete=false; $end=false;
+        $complete=$confirm=$end=false;
         foreach ($UserPyramids as $key => $UserPyramid) {
             if ($this->checkend($UserPyramid->pyramid_id)) {
                 $complete=true;
             }
             if (!empty($UserPyramid->pyramid->expire_at)) {
                 $end=true;
+            }
+            if (!empty($UserPyramid->pyramid->payment_verified_at)) {
+                $confirm=true;
             }
             $tmp[$UserPyramid->position]=array(
                                                                     "pyramid_user_id"   =>$UserPyramid->id,
@@ -97,7 +121,7 @@ class UserPyramidController extends Controller
                                                                 );
 
         }
-        return response()->json(['userpyramid'=>$tmp , 'iscomplete'=>$complete ,'isend' => $end]);
+        return response()->json(['userpyramid'=>$tmp , 'iscomplete'=>$complete ,'isend' => $end,'isconfirm' => $confirm]);
     }
     /**
      * Display the specified resource.
@@ -111,9 +135,8 @@ class UserPyramidController extends Controller
                                     ->first();
 
         $tmp=array();
-        $mine=false;
-        $end=false;
-        $complete=false;
+        $mine=$end=$complete=$confirm=$category_id=false;
+        
         if (!empty($PyramidId)) {
             $UserPyramids = UserPyramid::with(['user','pyramid'=>['category']])
                                         ->where('pyramid_id',intval($PyramidId->pyramid_id))
@@ -128,21 +151,35 @@ class UserPyramidController extends Controller
                 if (Auth::id()==$UserPyramid->user_id && $this->checkend($UserPyramid->pyramid_id)) {
                     $complete=true;
                 }
+                if (Auth::id()== $UserPyramid->user_id) {
+                    $myposition=$UserPyramid->position;
+                }
+                if (!empty($UserPyramid->pyramid->payment_verified_at)) {
+                    $confirm=true;
+                }
+                $category_id=$UserPyramid->pyramid->category->id;
                 $tmp[$UserPyramid->pyramid_id][$UserPyramid->id]=array(
-                                                                        "pyramid_user_id"   =>$UserPyramid->id,
-                                                                        "pyramid_id"        =>$UserPyramid->pyramid_id,
-                                                                        "created_at"        =>$UserPyramid->created_at,
-                                                                        "position"          =>$UserPyramid->position,
-                                                                        "user_id"           =>$UserPyramid->user_id,
-                                                                        "user_code"         =>$UserPyramid->user->code,
-                                                                        "user_name"         =>$UserPyramid->user->name,
-                                                                        "user_mobile_no"    =>$UserPyramid->user->mobile_no,
-                                                                        "category_name"     =>$UserPyramid->pyramid->category->name,
+                                                                        "pyramid_user_id"           =>$UserPyramid->id,
+                                                                        "pyramid_id"                =>$UserPyramid->pyramid_id,
+                                                                        "created_at"                =>$UserPyramid->created_at,
+                                                                        "position"                  =>$UserPyramid->position,
+                                                                        "user_id"                   =>$UserPyramid->user_id,
+                                                                        "user_code"                 =>$UserPyramid->user->code,
+                                                                        "user_name"                 =>$UserPyramid->user->name,
+                                                                        "user_mobile_no"            =>$UserPyramid->user->mobile_no,
+                                                                        "category_name"             =>$UserPyramid->pyramid->category->name,
+                                                                        "category_id"               =>$UserPyramid->pyramid->category->id,
+                                                                        "pyramid_name_account"      =>$UserPyramid->pyramid->pyramid_name_account,
+                                                                        "pyramid_number_account"    =>$UserPyramid->pyramid->pyramid_number_account,
+                                                                        "payment_verified_at"       =>$UserPyramid->pyramid->payment_verified_at,
+                                                                        "expire_at"                 =>$UserPyramid->pyramid->expire_at,
+                                                                        "category_name_account"     =>$UserPyramid->pyramid->category->category_name_account,
+                                                                        "category_number_account"   =>$UserPyramid->pyramid->category->category_number_account,
                                                                     );
 
             }
         }
-        return response()->json(['userpyramids' => $tmp,'ismine' => $mine,'isend' => $end,'iscomplete' => $complete]);
+        return response()->json(['userpyramids' => $tmp,'ismine' => $mine,'isend' => $end,'iscomplete' => $complete,'myposition'=>$myposition,'isconfirm' => $confirm,'category_id'=>$category_id]);
     }
 
     /**
@@ -163,9 +200,8 @@ class UserPyramidController extends Controller
     //  * @param  \App\Models\UserPyramid  $UserPyramid
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request,  $id)
+    public function update(Request $request,  UserPyramid $UserPyramid)
     {
-        $UserPyramid = UserPyramid::find($id);
         $validatedData = $request->validate([
             'pyramid_id'   => ['required', 'numeric'],
             'user_id'       => ['required', 'numeric'],

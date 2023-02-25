@@ -10,6 +10,7 @@ const PyramidEdit = () => import('./components/Pyramid/Edit.vue')
 const UserList = () => import('./components/User/List.vue')
 const UserCreate = () => import('./components/User/Add.vue')
 const UserEdit = () => import('./components/User/Edit.vue')
+const Profil = () => import('./components/User/Profil.vue')
 const UserPyramidEdit = () => import('./components/UserPyramid/Edit.vue')
 
 export const routes = [
@@ -17,6 +18,11 @@ export const routes = [
         name: 'moi',
         path: '/mypyramid',
         component: Mypyramid
+    },
+    {
+        name: 'profil',
+        path: '/profil',
+        component: Profil
     },
     {
         name: 'dashboard',
