@@ -41,7 +41,7 @@
                                     <!-- <td> <img v-bind:src="'/storage/app/images/'+user.carte_identite" v-bind:alt=" user.name " srcset=""></td> -->
                                     <td>
                                         <router-link :to='{ name:"userEdit" , params:{ id:user.id } }' class="btn btn-success">Edit</router-link>
-                                        <button hidden type="button" @click="deleteuser(user.id)" class="btn btn-danger">Delete</button>
+                                        <button type="button" @click="deleteuser(user.id)" class="btn btn-danger">Delete</button>
                                     </td>
                                 </tr>
                             </tbody>

@@ -28,7 +28,7 @@
                                     <td>{{ pyramid.expire_at }}</td>
                                     <td>
                                         <router-link :to='{ name:"pyramidEdit" , params:{ id:pyramid.id } }' class="btn btn-success">Edit</router-link>
-                                        <button hidden type="button" @click="deletepyramid(pyramid.id)" class="btn btn-danger">Delete</button>
+                                        <button  type="button" @click="deletepyramid(pyramid.id)" class="btn btn-danger">Delete</button>
                                     </td>
                                 </tr>
                             </tbody>

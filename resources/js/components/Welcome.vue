@@ -11,7 +11,7 @@
                                 <div>
                                     <div class="position-relative">
                                         <div class="position-absolute top-0 start-0 text-danger"><h1>{{ thecategoryname(userpyramid) }}</h1></div>
-                                        <div class="position-absolute top-0 end-0 text-danger"><h1> #{{  thepyramidid(userpyramid) }}</h1></div>
+                                        <div class="position-absolute top-0 end-0 text-danger"><h1> #{{  thepyramidcode(userpyramid) }}</h1></div>
                                     </div>
                                     <div class="position-relative mt-3">
                                         <div class="top-50 start-0">
@@ -160,6 +160,13 @@
                 var value='';
                 for (const key in userpyramid) {
                     value = (userpyramid[key].pyramid_id);break;
+                }
+                return value;
+            },
+            thepyramidcode(userpyramid){
+                var value='';
+                for (const key in userpyramid) {
+                    value = (userpyramid[key].code_pyramid);break;
                 }
                 return value;
             },

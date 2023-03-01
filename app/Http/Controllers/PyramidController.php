@@ -46,7 +46,7 @@ class PyramidController extends Controller
             'user_id' => ['required', 'numeric'],
             'category_id' => ['required', 'numeric'],
         ]);
-        $pyramid = Pyramid::create($validatedData);
+        $pyramid = $this->createPyramid($validatedData);
         UserPyramid::create(array('pyramid_id'=>$pyramid->id,
                                   'user_id'=>$pyramid->user_id,
                                   'position'=>1 ));
@@ -175,11 +175,11 @@ class PyramidController extends Controller
                     }
                 }
                 if(!($verificator) ){
-                    $pyramid = Pyramid::create(['category_id'=>$next_category->id,'user_id'=>$id]);
+                    $pyramid =$this->createPyramid(['category_id'=>$next_category->id,'user_id'=>$id]);
                     UserPyramid::create( ['pyramid_id'=>$pyramid->id,'user_id'=>$id,'position'=>1 ] );
                 }
             }else {
-                $pyramid = Pyramid::create(['category_id'=>$next_category->id,'user_id'=>$id]);
+                $pyramid =$this->createPyramid(['category_id'=>$next_category->id,'user_id'=>$id]);
                 UserPyramid::create( ['pyramid_id'=>$pyramid->id,'user_id'=>$id,'position'=>1 ] );
             }
             $msg= 'Welcome to '.$next_category->name;
@@ -202,5 +202,13 @@ class PyramidController extends Controller
                 $previous_key=$category->id;
             }
             return Category::find($previous_key);
+    }
+    protected function createPyramid($data)
+    {
+        return Pyramid::create([
+            'user_id' => $data['user_id'],
+            'category_id' => $data['category_id'],
+            'code_pyramid' => Pyramid::generateNextCode($data['category_id']),
+        ]);
     }
 }

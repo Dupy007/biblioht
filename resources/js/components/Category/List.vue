@@ -32,7 +32,7 @@
                                     <td>{{ category.category_number_account }}</td>
                                     <td>
                                         <router-link :to='{ name:"categoryEdit" , params:{ id:category.id } }' class="btn btn-success">Edit</router-link>
-                                        <button hidden type="button" @click="deleteCategory(category.id)" class="btn btn-danger">Delete</button>
+                                        <button type="button" @click="deleteCategory(category.id)" class="btn btn-danger">Delete</button>
                                     </td>
                                 </tr>
                             </tbody>

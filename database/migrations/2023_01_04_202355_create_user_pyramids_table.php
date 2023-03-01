@@ -16,9 +16,9 @@ return new class extends Migration
         Schema::create('user_pyramids', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('pyramid_id');
-            $table->foreign('pyramid_id')->references('id')->on('pyramids');
+            $table->foreign('pyramid_id')->references('id')->on('pyramids')->onDelete('cascade')->onUpdate('cascade');
             $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
             $table->unsignedBigInteger('position');
             $table->timestamps();
         });

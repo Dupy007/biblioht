@@ -31,7 +31,8 @@ class UserPyramidController extends Controller
                                                                     "user_name"                 =>$UserPyramid->user->name,
                                                                     "user_mobile_no"            =>$UserPyramid->user->mobile_no,
                                                                     "category_name"             =>$UserPyramid->pyramid->category->name,
-                                                                    "expire_at"                  =>$UserPyramid->pyramid->expire_at,
+                                                                    "expire_at"                 =>$UserPyramid->pyramid->expire_at,
+                                                                    "code_pyramid"              =>$UserPyramid->pyramid->code_pyramid,
                                                                 );
         }
         return response()->json($tmp);
@@ -175,6 +176,7 @@ class UserPyramidController extends Controller
                                                                         "expire_at"                 =>$UserPyramid->pyramid->expire_at,
                                                                         "category_name_account"     =>$UserPyramid->pyramid->category->category_name_account,
                                                                         "category_number_account"   =>$UserPyramid->pyramid->category->category_number_account,
+                                                                        "code_pyramid"              =>$UserPyramid->pyramid->code_pyramid,
                                                                     );
 
             }
