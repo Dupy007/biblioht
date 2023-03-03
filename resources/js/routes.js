@@ -12,22 +12,33 @@ const UserCreate = () => import('./components/User/Add.vue')
 const UserEdit = () => import('./components/User/Edit.vue')
 const Profil = () => import('./components/User/Profil.vue')
 const UserPyramidEdit = () => import('./components/UserPyramid/Edit.vue')
+import auth from './middleware/auth';
+import admin from './middleware/admin';
 
 export const routes = [
     {
         name: 'moi',
         path: '/mypyramid',
-        component: Mypyramid
+        component: Mypyramid,
+        meta: {
+            middleware: [ auth],
+        },
     },
     {
         name: 'profil',
         path: '/profil',
-        component: Profil
+        component: Profil,
+        meta: {
+            middleware: [auth],
+        },
     },
     {
         name: 'dashboard',
         path: '/home',
-        component: Dashboard
+        component: Dashboard,
+        meta: {
+            middleware: [auth],
+        },
     },
     {
         name: 'home',
@@ -37,52 +48,82 @@ export const routes = [
     {
         name: 'categoryList',
         path: '/category',
-        component: CategoryList
+        component: CategoryList,
+        meta: {
+            middleware: [ admin],
+        },
     },
     {
         name: 'categoryEdit',
         path: '/category/:id/edit',
-        component: CategoryEdit
+        component: CategoryEdit,
+        meta: {
+            middleware: [ admin],
+        },
     },
     {
         name: 'categoryAdd',
         path: '/category/add',
-        component: CategoryCreate
+        component: CategoryCreate,
+        meta: {
+            middleware: [ admin],
+        },
     },
     {
         name: 'pyramidList',
         path: '/pyramid',
-        component: PyramidList
+        component: PyramidList,
+        meta: {
+            middleware: [ admin],
+        },
     },
     {
         name: 'pyramidEdit',
         path: '/pyramid/:id/edit',
-        component: PyramidEdit
+        component: PyramidEdit,
+        meta: {
+            middleware: [ admin],
+        },
     },
     {
         name: 'pyramidAdd',
         path: '/pyramid/add',
-        component: PyramidCreate
+        component: PyramidCreate,
+        meta: {
+            middleware: [ admin],
+        },
     },
     {
         name: 'userList',
         path: '/user',
-        component: UserList
+        component: UserList,
+        meta: {
+            middleware: [ admin],
+        },
     },
     {
         name: 'userEdit',
         path: '/user/:id/edit',
-        component: UserEdit
+        component: UserEdit,
+        meta: {
+            middleware: [ admin],
+        },
     },
     {
         name: 'userAdd',
         path: '/user/add',
-        component: UserCreate
+        component: UserCreate,
+        meta: {
+            middleware: [ admin],
+        },
     },
     {
         name: 'userpyramidEdit',
         path: '/userpyramid/:id/edit',
-        component: UserPyramidEdit
+        component: UserPyramidEdit,
+        meta: {
+            middleware: [ admin],
+        },
     },
 
 ]

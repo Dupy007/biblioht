@@ -136,20 +136,20 @@ class UserPyramidController extends Controller
                                     ->first();
 
         $tmp=array();
-        $mine=$end=$complete=$confirm=$category_id=false;
+        $mine=$end=$complete=$confirm=$category_id=$myposition=false;
         
         if (!empty($PyramidId)) {
             $UserPyramids = UserPyramid::with(['user','pyramid'=>['category']])
                                         ->where('pyramid_id',intval($PyramidId->pyramid_id))
                                         ->get();
             foreach ($UserPyramids as $key => $UserPyramid) {
-                if (Auth::id()==$UserPyramid->user_id && $UserPyramid->position==1) {
+                if (Auth::id()==$UserPyramid->pyramid->user_id && $UserPyramid->position==1) {
                     $mine=true;
                 }
-                if (Auth::id()==$UserPyramid->user_id && !empty($UserPyramid->pyramid->expire_at)) {
+                if (Auth::id()==$UserPyramid->pyramid->user_id && !empty($UserPyramid->pyramid->expire_at)) {
                     $end=true;
                 }
-                if (Auth::id()==$UserPyramid->user_id && $this->checkend($UserPyramid->pyramid_id)) {
+                if (Auth::id()==$UserPyramid->pyramid->user_id && $this->checkend($UserPyramid->pyramid_id)) {
                     $complete=true;
                 }
                 if (Auth::id()== $UserPyramid->user_id) {
