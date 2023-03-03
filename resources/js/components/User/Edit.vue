@@ -23,6 +23,12 @@
                             </div>
                             <div class="col-12 mb-2">
                                 <div class="form-group">
+                                    <label>Nickname</label>
+                                    <input type="text" class="form-control" v-model="user.nickname">
+                                </div>
+                            </div>
+                            <div class="col-12 mb-2">
+                                <div class="form-group">
                                     <label>Mobile</label>
                                     <input type="text" class="form-control" v-model="user.mobile_no">
                                 </div>
@@ -82,6 +88,7 @@ export default{
         return{
             user:{
                 name:"",
+                nickname:"",
                 mobile_no:"",
                 email:"",
                 code:"",
@@ -101,8 +108,9 @@ export default{
     methods:{
         async showuser(){
             await axios.get('/plf/user/'+this.$route.params.id).then(response=>{
-                const { name,mobile_no,email,code,type_account,parrain,departement} = response.data
+                const { name,mobile_no,email,code,type_account,parrain,departement,nickname} = response.data
                 this.user.name = name
+                this.user.nickname = nickname
                 this.user.mobile_no = mobile_no
                 this.user.email = email
                 this.user.code = code
@@ -130,6 +138,7 @@ export default{
             if(this.user.name && this.user.email  ) this.update();
             this.errors = [];
             if(!this.user.name) this.errors.push("Name required.");
+            if(!this.user.nickname) this.errors.push("Nickname required.");
             if(!this.user.email) this.errors.push("Email required.");
             if(!this.user.mobile_no) this.errors.push("Mobile required.");
             e.preventDefault();

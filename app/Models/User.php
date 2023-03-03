@@ -27,6 +27,7 @@ class User extends Authenticatable
         'type_account',
         'carte_identite',
         'departement',
+        'nickname',
     ];
 
     /**

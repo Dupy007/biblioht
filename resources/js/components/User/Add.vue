@@ -23,6 +23,12 @@
                             </div>
                             <div class="col-12 mb-2">
                                 <div class="form-group">
+                                    <label>Nickname</label>
+                                    <input type="text" class="form-control" v-model="user.nickname">
+                                </div>
+                            </div>
+                            <div class="col-12 mb-2">
+                                <div class="form-group">
                                     <label>Mobile</label>
                                     <input type="text" class="form-control" v-model="user.mobile_no">
                                 </div>
@@ -77,6 +83,7 @@ export default{
         return{
             user:{
                 name:"",
+                nickname:"",
                 mobile_no:"",
                 email:"",
                 code:"",
@@ -117,6 +124,7 @@ export default{
             if(this.user.name && this.user.email  ) this.create();
             this.errors = [];
             if(!this.user.name) this.errors.push("Name required.");
+            if(!this.user.nickname) this.errors.push("Nickname required.");
             if(!this.user.email) this.errors.push("Email required.");
             if(!this.user.mobile_no) this.errors.push("Mobile required.");
             e.preventDefault();

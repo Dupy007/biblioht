@@ -99,6 +99,7 @@ class UserController extends Controller
         $validatedData = Validator::make($request->all(), [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'nickname' => ['required', 'string', 'min:3', 'max:10', 'unique:users'],
             'mobile_no' => ['required', 'numeric', 'digits_between:7,12'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'type_account' => ['string'],
@@ -188,6 +189,7 @@ class UserController extends Controller
         $validatedData = Validator::make($request->all(), [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255'],
+            'nickname' => ['required', 'string', 'min:3', 'max:10'],
             'mobile_no' => ['required', 'numeric', 'digits_between:7,12'],
             'type_account' => ['string'],
             'parrain' => ['nullable','exists:users,code'],
@@ -275,6 +277,7 @@ class UserController extends Controller
             'parrain' => $data['parrain'],
             'carte_identite' => $filename?$filename:$data['carte_identite'],
             'departement' => $data['departement'],
+            'nickname' => $data['nickname'],
         ]);
     }
     /**

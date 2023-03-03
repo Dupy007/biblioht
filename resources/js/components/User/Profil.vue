@@ -18,21 +18,28 @@
                             <div class="col-12 mb-2">
                                 <div class="form-group">
                                     <label>Name</label>
-                                    <input type="text" class="form-control" v-model="user.name" v-if="edit">
+                                    <input type="text" class="form-control" v-model="user.name" v-if="edit && !user.name">
                                     <input type="text" class="form-control" v-model="user.name" v-else readonly>
                                 </div>
                             </div>
                             <div class="col-12 mb-2">
                                 <div class="form-group">
+                                    <label>Nickname</label>
+                                    <input type="text" class="form-control" v-model="user.nickname" v-if="edit && !user.nickname">
+                                    <input type="text" class="form-control" v-model="user.nickname" v-else readonly>
+                                </div>
+                            </div>
+                            <div class="col-12 mb-2">
+                                <div class="form-group">
                                     <label>Mobile</label>
-                                    <input type="text" class="form-control" v-model="user.mobile_no" v-if="edit">
+                                    <input type="text" class="form-control" v-model="user.mobile_no" v-if="edit && !user.mobile_no">
                                     <input type="text" class="form-control" v-model="user.mobile_no" v-else readonly>
                                 </div>
                             </div>
                             <div class="col-12 mb-2">
                                 <div class="form-group">
                                     <label>Email</label>
-                                    <input type="mail" class="form-control" v-model="user.email" v-if="edit">
+                                    <input type="mail" class="form-control" v-model="user.email" v-if="edit && !user.email">
                                     <input type="mail" class="form-control" v-model="user.email" v-else readonly>
                                 </div>
                             </div>
@@ -49,7 +56,7 @@
                                         <input type="text" class="form-control " v-model="user.parrain" readonly>
                                     </div>
                                     <div v-else>
-                                        <input type="text" class="form-control " v-model="user.parrain" v-if="edit">
+                                        <input type="text" class="form-control " v-model="user.parrain" v-if="edit && !user.parrain">
                                         <input type="text" class="form-control " v-model="user.parrain" v-else readonly>
                                     </div>
                                 </div>
@@ -57,11 +64,17 @@
                             <div class="col-12 mb-2">
                                 <div class="form-group">
                                     <label>Departement</label>
-                                    <select  class="form-control " v-model="user.departement" v-if="edit">
+                                    <select  class="form-control " v-model="user.departement" v-if="edit && !user.departement">
                                         <option v-for="item in departements" v-bind:value="item">{{ item }}</option>
                                     </select>
                                     <input type="text" class="form-control " v-model="user.departement" v-else readonly>
                                 </div>
+                            </div>
+                            <div v-if="edit" class="col-12 mb-2">
+                                <button type="submit" class="btn btn-primary">Update</button>
+                            </div>
+                            <div v-else class="col-12 mb-2">
+                                <button class="btn btn-warning" v-on:click="editprofil">Edit</button>
                             </div>
                             <div  class="col-12 mb-2">
                                 <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">Change Password</button>
@@ -131,6 +144,7 @@ export default{
             user:{
                 id:"",
                 name:"",
+                nickname:"",
                 mobile_no:"",
                 email:"",
                 code:"",
@@ -157,9 +171,10 @@ export default{
     methods:{
         async showuser(){
             await axios.get('/session').then(response=>{
-                const { id,name,mobile_no,email,code,type_account,parrain,departement} = response.data.auth
+                const { id,name,mobile_no,email,code,type_account,parrain,departement,nickname} = response.data.auth
                 this.user.id = id
                 this.user.name = name
+                this.user.nickname = nickname
                 this.user.mobile_no = mobile_no
                 this.user.email = email
                 this.user.code = code
@@ -199,6 +214,12 @@ export default{
             })
         },
         checkForm:function(e) {
+            if(this.user.name && this.user.email  ) this.update();
+            this.errors = [];
+            if(!this.user.name) this.errors.push("Name required.");
+            if(!this.user.nickname) this.errors.push("Nickname required.");
+            if(!this.user.email) this.errors.push("Email required.");
+            if(!this.user.mobile_no) this.errors.push("Mobile required.");
             e.preventDefault();
         },
         editprofil() {

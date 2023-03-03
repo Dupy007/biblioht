@@ -18,6 +18,7 @@
                                 <tr>
                                     <th>ID</th>
                                     <th>Name</th>
+                                    <th>Nickname</th>
                                     <th>Mobile</th>
                                     <th>Email</th>
                                     <th>Code</th>
@@ -32,6 +33,7 @@
                                 <tr v-for="(user,key) in filtered" :key="key">
                                     <td>{{ user.id }}</td>
                                     <td>{{ user.name }}</td>
+                                    <td>{{ user.nickname }}</td>
                                     <td>{{ user.mobile_no }}</td>
                                     <td>{{ user.email }}</td>
                                     <td>{{ user.code }}</td>
