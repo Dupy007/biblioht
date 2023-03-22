@@ -20,7 +20,6 @@ import login from './components/Login.vue';
 import register from './components/Register.vue';
 import {routes} from './routes';
 import './jquery.js';
-import SelectPicker from 'vue-bootstrap-selectpicker'
 const router = createRouter({
     history: createWebHistory(),
     routes:routes
@@ -71,6 +70,5 @@ app.component('component-dashboard', dashboard);
 app.component('component-welcome', welcome);
 app.component('component-login', login);
 app.component('component-register', register);
-app.use(SelectPicker)
 app.use(router);
 app.mount('#app');

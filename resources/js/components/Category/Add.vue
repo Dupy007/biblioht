@@ -45,6 +45,12 @@
                                 </div>
                             </div>
                             <div class="col-12 mb-2">
+                                <div class="form-group">
+                                    <label>Limit pyramid</label>
+                                    <input type="number" class="form-control" v-model="category.category_max">
+                                </div>
+                            </div>
+                            <div class="col-12 mb-2">
                                 <button type="submit" class="btn btn-primary">Save</button>
                             </div>
                         </div>
@@ -66,6 +72,7 @@ export default{
                 description:"",
                 category_name_account:"",
                 category_number_account:"",
+                category_max:"",
             },
             errors:[],
         }

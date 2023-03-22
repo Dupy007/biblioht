@@ -30,12 +30,14 @@
                                     </select>
                                 </div>
                             </div>
-                            <!-- <div class="col-12 mb-2">
+                            <div class="col-12 mb-2">
                                 <div class="form-group">
-                                    <label>Expire</label>
-                                    <input type="text" class="form-control" v-model="pyramid.expire_at">
+                                    <label>Statut</label>
+                                    <select class="form-control" v-model="pyramid.statut">
+                                        <option v-for="(option,key) in statuts" v-bind:value="key">{{ option }}</option>
+                                    </select>
                                 </div>
-                            </div> -->
+                            </div>
                             <div class="col-12 mb-2">
                                 <button type="submit" class="btn btn-primary">Update</button>
                             </div>
@@ -56,7 +58,12 @@ export default{
                 user_id:"",
                 category_id:"",
                 expire_at:"",
+                statut:"",
                 _method:"patch"
+            },
+            statuts:{
+                '':"",
+                'a':"Archived",
             },
             users:[],
             categories:[],
@@ -71,10 +78,11 @@ export default{
     methods:{
         async showpyramid(){
             await axios.get('/plf/pyramid/'+this.$route.params.id).then(response=>{
-                const { user_id,category_id, expire_at} = response.data
+                const { user_id,category_id, expire_at,statut} = response.data
                 this.pyramid.user_id = user_id
                 this.pyramid.category_id = category_id
                 this.pyramid.expire_at = expire_at
+                this.pyramid.statut = statut
             }).catch(error=>{
             })
         },

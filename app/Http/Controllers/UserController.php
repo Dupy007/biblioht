@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Category;
+use App\Models\Pyramid;
 use App\Models\UserPyramid;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -21,19 +23,20 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::orderBy('id', 'desc')->get();
+        $users = User::where("type_account","<>","admin")->orderBy('name', 'asc')->get();
         return response()->json($users);
     }
-
-    /**
-     * Show the form for creating a new resource.
+     /**
+     * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function getAll()
     {
-        //
+        $users = User::all();
+        return response()->json($users);
     }
+
     private function checkparrain($data){
         if (!empty($data)) {
             $parrain=$data["parrain"];
@@ -57,7 +60,9 @@ class UserController extends Controller
                 $user = User::where([['code', $parrain],
                                     ($id? ['id','<>',$id ] :['code', $parrain])])
                 ->first();
-                $userpyramid = UserPyramid::where('user_id',$user->id)->orderBy('created_at','desc')->first();
+                $smallcat = Category::smallest();
+                $pyramid = Pyramid::where('category_id',$smallcat->id)->where('statut',null)->get('id');
+                $userpyramid = UserPyramid::where('user_id',$user->id)->whereIn('pyramid_id',$pyramid)->orderBy('created_at','desc')->first();
                 if (!empty($userpyramid) && $userpyramid->position<=7) {
                     return true;
                 }
@@ -112,12 +117,12 @@ class UserController extends Controller
 
         $this->therequest = array('parrain' => $request->input('parrain'),'id'=>null);
         $validatedData->after(function ($validatedData) {
-            $val= $this->checkparrain($this->therequest);
-            if ($val) {
-                $validatedData->errors()->add(
-                    'parrain', 'This code has already sponsored two people!',
-                );
-            }
+            // $val= $this->checkparrain($this->therequest);
+            // if ($val) {
+            //     $validatedData->errors()->add(
+            //         'parrain', 'This code has already sponsored two people!',
+            //     );
+            // }
             $can= $this->canparrain($this->therequest);
             if (!$can) {
                 $validatedData->errors()->add(
@@ -197,12 +202,12 @@ class UserController extends Controller
         ]);
         $this->therequest = array('parrain' => $request->input('parrain'),'id'=>$user->id);
         $validatedData->after(function ($validatedData) {
-            $val= $this->checkparrain($this->therequest);
-            if ($val) {
-                $validatedData->errors()->add(
-                    'parrain', 'This code has already sponsored two people!',
-                );
-            }
+            // $val= $this->checkparrain($this->therequest);
+            // if ($val) {
+            //     $validatedData->errors()->add(
+            //         'parrain', 'This code has already sponsored two people!',
+            //     );
+            // }
             $can= $this->canparrain($this->therequest);
             if (!$can) {
                 $validatedData->errors()->add(

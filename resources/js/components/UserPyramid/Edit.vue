@@ -18,9 +18,10 @@
                                 <h5>User</h5>
                                 <div class="form-group" v-for="(userpyramid,key) in userpyramids" :key="key">
                                     <label>Position  {{ key }}</label>
+                                    <input type="text" class="form-control" id="datatable-search-input" v-model="search" placeholder="Search">
                                     <select class="form-control selectpicker" v-model="userpyramid.user_id" data-live-search="true">
                                         <option></option>
-                                        <option v-for="option in users" v-bind:value="option.id">{{ option.name }}</option>
+                                        <option v-for="option in filtered" v-bind:value="option.id">{{ option.name }}</option>
                                     </select>
                                 </div>
                             </div>
@@ -35,7 +36,7 @@
                     <div v-if="!isend && isconfirm" class="col-12 mb-2 text-center">
                         <p> The user confirm  payment</p>
                     </div>
-                    <form @submit.prevent="endpyramid" v-if="!isend && iscomplete ">
+                    <form @submit.prevent="endpyramid" v-if="!isend && isconfirm ">
                         <input type="text" class="form-control" v-model="pyramid_id" hidden>
                         <div class="col-12 mb-2">
                             <button type="submit" class="btn btn-primary">Confirm the end of the pyramid</button>
@@ -69,6 +70,7 @@ export default{
             isend:false,
             isconfirm:false,
             pyramid_id:null,
+            search: "",
         }
     },
     mounted(){
@@ -82,7 +84,7 @@ export default{
                 this.isend = response.data.isend
                 this.isconfirm = response.data.isconfirm
                 let res = response.data.userpyramid
-                for (let index = 1; index < 16; index++) {
+                for (let index = 2; index < 16; index++) {
                     let userpyramid = {
                                 user_id:    null,
                                 pyramid_id: res[1].pyramid_id,
@@ -149,6 +151,13 @@ export default{
                     this.userpyramids = []
                 })
             },
-    }
+    },
+    computed: {
+        filtered() {
+        return this.users.filter(p => {
+            return p.name.toLowerCase().indexOf(this.search.toLowerCase()) != -1;
+        });
+        }
+  }
 }
 </script>

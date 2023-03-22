@@ -70,12 +70,6 @@
                                     <input type="text" class="form-control " v-model="user.departement" v-else readonly>
                                 </div>
                             </div>
-                            <div v-if="edit" class="col-12 mb-2">
-                                <button type="submit" class="btn btn-primary">Update</button>
-                            </div>
-                            <div v-else class="col-12 mb-2">
-                                <button class="btn btn-warning" v-on:click="editprofil">Edit</button>
-                            </div>
                             <div  class="col-12 mb-2">
                                 <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">Change Password</button>
                             </div>

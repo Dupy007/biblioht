@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Pyramid;
 use App\Models\UserPyramid;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class PyramidController extends Controller
 {
@@ -25,16 +26,6 @@ class PyramidController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -42,11 +33,28 @@ class PyramidController extends Controller
      */
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
+        $validatedData = Validator::make($request->all(), [
             'user_id' => ['required', 'numeric'],
             'category_id' => ['required', 'numeric'],
         ]);
-        $pyramid = $this->createPyramid($validatedData);
+        $validatedData->after(function ($validatedData) use ($request) {
+            $category = Category::where('id',$request->category_id)->first();
+            if(intval($category->category_max)<1)
+                $category->category_max=1;
+            $pyramids = Pyramid::where('category_id',$category->id)->where('statut',null)->get('id');
+            if ( $pyramids->count()>0) {
+                $userpyramids = UserPyramid::distinct()->where('user_id',$request->user_id)
+                                            ->whereIn('pyramid_id',$pyramids)->get('position');
+                if ( $userpyramids->count() > $category->category_max) {
+                    $validatedData->errors()->add(
+                        'pyramid', 'This user cannot exceed '.$category->category_max.' circles in '.$category->name.'!',
+                    );
+                }
+            }
+        });
+        $validatedData = $validatedData->validate();
+
+        $pyramid = Pyramid::createPyramid($validatedData);
         UserPyramid::create(array('pyramid_id'=>$pyramid->id,
                                   'user_id'=>$pyramid->user_id,
                                   'position'=>1 ));
@@ -68,17 +76,6 @@ class PyramidController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Pyramid  $pyramid
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Pyramid $pyramid)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -87,14 +84,51 @@ class PyramidController extends Controller
      */
     public function update(Request $request, Pyramid $pyramid)
     {
-        $validatedData = $request->validate([
+        $validatedData = Validator::make($request->all(), [
             'user_id' => ['required', 'numeric'],
             'category_id' => ['required', 'numeric'],
-            'pyramid_name_account' => ['string'],
-            'pyramid_number_account' => ['string'],
+            'pyramid_name_account' => ['nullable','string'],
+            'pyramid_number_account' => ['nullable','string'],
+            'statut' => ['nullable','string'],
         ]);
+        $validatedData->after(function ($validatedData) use ($request,$pyramid) {
+            $category = Category::where('id',$request->category_id)->first();
+            if(intval($category->category_max)<1)
+                $category->category_max=1;
+            $pyramids = Pyramid::where('category_id',$category->id)->where('statut',null)->get('id');
+            if ( $pyramids->count()>0) {
+                $userpyramids = UserPyramid::distinct()->where('user_id',$request->user_id)
+                                            ->where('pyramid_id','<>',$pyramid->id)
+                                            ->whereIn('pyramid_id',$pyramids)->get('position');
+                if ( $userpyramids->count()>$category->category_max) {
+                    $validatedData->errors()->add(
+                        'pyramid', 'This user cannot exceed '.$category->category_max.' circles in '.$category->name.'!',
+                    );
+                }
+            }
+        });
+        $validatedData = $validatedData->validate();
         $pyramid->fill($validatedData)->save();
-
+        $userpyramid= UserPyramid::where([["position","=",1],["pyramid_id","=",$pyramid->id]])->first();
+        $userpyramid->user_id = $pyramid->user_id;
+        $userpyramid->save();
+        return response()->json([
+            'message' => 'Pyramid Updated Successfully!!!',
+            'pyramid' => $pyramid
+        ]);
+    }
+    public function updatepyramid(Request $request, int $id)
+    {
+        $validatedData = Validator::make($request->all(), [
+            'user_id' => ['required', 'numeric'],
+            'category_id' => ['required', 'numeric'],
+            'pyramid_name_account' => ['nullable','string'],
+            'pyramid_number_account' => ['nullable','string'],
+            'statut' => ['nullable','string'],
+        ]);
+        $validatedData = $validatedData->validate();
+        $pyramid= Pyramid::where("id",$id)->first();
+        $pyramid->fill($validatedData)->save();
         return response()->json([
             'message' => 'Pyramid Updated Successfully!!!',
             'pyramid' => $pyramid
@@ -150,9 +184,22 @@ class PyramidController extends Controller
      */
     public function nextpyramid(int $id)
     {
-        $pyramid= Pyramid::where('user_id',$id)->latest('created_at')->first();
-        // $pyramid= Pyramid::where('user_id',$id)->last();
+        $pyramid= Pyramid::where('id',$id)->first();
         $next_category = $this->checknextcategory($pyramid->category_id);
+        $category = $next_category;
+        if(intval($category->category_max)<1)
+            $category->category_max=1;
+        $pyramids = Pyramid::where('category_id',$category->id)->where('statut',null)->get('id');
+        if ( $pyramids->count()>0) {
+            $userpyramids = UserPyramid::distinct()->where('user_id',$pyramid->user_id)
+                                        ->whereIn('pyramid_id',$pyramids)->get('position');
+            if ( $userpyramids->count()>$category->category_max) {
+                return response()->json([
+                    'message' => 'You cannot exceed '.$category->category_max.' circles in '.$category->name.'!',
+                    'pyramid' => $pyramid
+                ]);
+            }
+        }
         if(!empty($next_category) && $next_category->id!=$pyramid->id){
             $pyramids_in_category = Pyramid::where('category_id',$next_category->id)->get();
             if (!empty($pyramids_in_category)) {
@@ -167,20 +214,22 @@ class PyramidController extends Controller
                         for ($i=1; $i < 16; $i++) {
                             if (!array_key_exists($i,$tmp)) {
                                 $verificator=true;
-                                UserPyramid::create( ['pyramid_id'=>$pyramid_in_category->id,'user_id'=>$id,'position'=>$i ] );
+                                UserPyramid::create( ['pyramid_id'=>$pyramid_in_category->id,'user_id'=>$pyramid->user_id,'position'=>$i ] );
                                 break;
                             }
                         }
                         break;
                     }
                 }
+                $pyramid->fill(['statut'=>'a'])->save();
                 if(!($verificator) ){
-                    $pyramid =$this->createPyramid(['category_id'=>$next_category->id,'user_id'=>$id]);
-                    UserPyramid::create( ['pyramid_id'=>$pyramid->id,'user_id'=>$id,'position'=>1 ] );
+                    $pyramid =Pyramid::createPyramid(['category_id'=>$next_category->id,'user_id'=>$pyramid->user_id]);
+                    UserPyramid::create( ['pyramid_id'=>$pyramid->id,'user_id'=>$pyramid->user_id,'position'=>1 ] );
                 }
             }else {
-                $pyramid =$this->createPyramid(['category_id'=>$next_category->id,'user_id'=>$id]);
-                UserPyramid::create( ['pyramid_id'=>$pyramid->id,'user_id'=>$id,'position'=>1 ] );
+                $pyramid->fill(['statut'=>'a'])->save();
+                $pyramid =Pyramid::createPyramid(['category_id'=>$next_category->id,'user_id'=>$pyramid->user_id]);
+                UserPyramid::create( ['pyramid_id'=>$pyramid->id,'user_id'=>$pyramid->user_id,'position'=>1 ] );
             }
             $msg= 'Welcome to '.$next_category->name;
         }else{
@@ -201,14 +250,6 @@ class PyramidController extends Controller
                 }
                 $previous_key=$category->id;
             }
-            return Category::find($previous_key);
-    }
-    protected function createPyramid($data)
-    {
-        return Pyramid::create([
-            'user_id' => $data['user_id'],
-            'category_id' => $data['category_id'],
-            'code_pyramid' => Pyramid::generateNextCode($data['category_id']),
-        ]);
+            return Category::where('id',$previous_key)->first();
     }
 }

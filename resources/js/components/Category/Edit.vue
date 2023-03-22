@@ -45,6 +45,12 @@
                                 </div>
                             </div>
                             <div class="col-12 mb-2">
+                                <div class="form-group">
+                                    <label>Limit pyramid</label>
+                                    <input type="number" class="form-control" v-model="category.category_max">
+                                </div>
+                            </div>
+                            <div class="col-12 mb-2">
                                 <button type="submit" class="btn btn-primary">Update</button>
                             </div>
                         </div>
@@ -66,6 +72,7 @@ export default{
                 description:"",
                 category_name_account:"",
                 category_number_account:"",
+                category_max:"",
                 _method:"patch"
             },
             errors:[],
@@ -77,12 +84,13 @@ export default{
     methods:{
         async showCategory(){
             await axios.get('/plf/category/'+this.$route.params.id).then(response=>{
-                const { name,valeur, description,category_name_account,category_number_account} = response.data
+                const { name,valeur, description,category_name_account,category_number_account,category_max} = response.data
                 this.category.name = name
                 this.category.valeur = valeur
                 this.category.description = description
                 this.category.category_name_account = category_name_account
                 this.category.category_number_account = category_number_account
+                this.category.category_max = category_max
             }).catch(error=>{
             })
         },

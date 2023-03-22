@@ -44,6 +44,7 @@
                                     <td>
                                         <router-link :to='{ name:"userEdit" , params:{ id:user.id } }' class="btn btn-success">Edit</router-link>
                                         <button type="button" @click="deleteuser(user.id)" class="btn btn-danger">Delete</button>
+                                        <router-link :to='{ name:"Pyramid_user" , params:{ id:user.id } }' class="btn btn-primary">Detail</router-link>
                                     </td>
                                 </tr>
                             </tbody>
@@ -74,7 +75,7 @@ export default {
     },
     methods:{
         async getUsers(){
-            await axios.get('/plf/user').then(response=>{
+            await axios.get('/plf/getAllUsers').then(response=>{
                 this.users = response.data
             }).catch(error=>{
                 this.users = []

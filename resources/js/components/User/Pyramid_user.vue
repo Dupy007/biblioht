@@ -3,12 +3,66 @@
         <div class="row justify-content-center">
             <div class="col-md-12">
                 <div class="card">
-                    <div class="card-header">Dashboard</div>
+                    <div class="card-header">{{ username }}</div>
                     <div class="card-body">
+                        <form>
+                        <div class="row">
+                            <div class="col-12 mb-2">
+                                <div class="form-group">
+                                    <label>Name</label>
+                                    <input type="text" class="form-control" v-model="user.name" readonly>
+                                </div>
+                            </div>
+                            <div class="col-12 mb-2">
+                                <div class="form-group">
+                                    <label>Nickname</label>
+                                    <input type="text" class="form-control" v-model="user.nickname" readonly>
+                                </div>
+                            </div>
+                            <div class="col-12 mb-2">
+                                <div class="form-group">
+                                    <label>Mobile</label>
+                                    <input type="text" class="form-control" v-model="user.mobile_no" readonly>
+                                </div>
+                            </div>
+                            <div class="col-12 mb-2">
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="mail" class="form-control" v-model="user.email" readonly>
+                                </div>
+                            </div>
+                            <div class="col-12 mb-2">
+                                <div class="form-group">
+                                    <label>Code</label>
+                                    <input type="text" class="form-control" readonly v-model="user.code">
+                                </div>
+                            </div>
+                            <div class="col-12 mb-2">
+                                <div class="form-group">
+                                    <label>Code Parrain</label>
+                                    <input type="text" class="form-control " v-model="user.parrain" readonly>
+                                </div>
+                            </div>
+                            <div class="col-12 mb-2">
+                                <div class="form-group">
+                                    <label>Departement</label>
+                                    <input type="text" class="form-control " v-model="user.departement" readonly>
+                                </div>
+                            </div>
+                            <div class="col-12 mb-2" v-if="user.carte_identite">
+                                <div class="form-group">
+                                    <label>Carte d'identité</label>
+                                    <div class="form-control">
+                                        <img class="col-4 row-6" v-bind:src="'../../../../storage/app/images/'+user.carte_identite">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
                         <div >
                             <div v-for="(userpyramids,valeur) in filtered" :key="valeur">
                                 <div class="card-header text-center my-2" type="button" data-bs-toggle="collapse" v-bind:data-bs-target="'#collapseExample'+valeur" aria-expanded="false" v-bind:aria-controls="'collapseExample'+valeur">
-                                    All circles of {{ valeur }}
+                                     {{ 'All circles of '+valeur }}
                                 </div>
                                 <div class="collapse" v-bind:id="'collapseExample'+valeur">
                                     <div class="card card-body">
@@ -16,8 +70,8 @@
                                             <div class="col-lg-6 py-4 my-2 card" v-for="(userpyramid,key) in userpyramids" :key="key">
                                                 <div>
                                             <div class="position-relative">
-                                                <div class="position-absolute top-0 start-0 text-success"><h1>{{ userpyramid.category_name }}</h1></div>
-                                                <div class="position-absolute top-0 end-0 text-danger"><h1> #{{  userpyramid.code_pyramid }}</h1></div>
+                                                <div class="position-absolute top-0 start-0 text-success"><h1>{{ thecategoryname(userpyramid) }}</h1></div>
+                                                <div class="position-absolute top-0 end-0 text-danger"><h1> #{{  thepyramidcode(userpyramid) }}</h1></div>
                                             </div>
                                             <div class="position-relative mt-3">
                                                 <div class="top-50 start-0">
@@ -45,11 +99,11 @@
                                                 </div>
                                             </div>
                                             <div class="position-relative mt-4">
-                                                <div class="position-absolute bottom-0 start-0 text-danger"><h1>{{ getdate(userpyramid.created_at) }}</h1></div>
-                                                <div class="position-absolute bottom-0 end-0 text-danger"><h1>{{ getdate(userpyramid.expire_at) }}</h1></div>
+                                                <div class="position-absolute bottom-0 start-0 text-danger"><h1>{{ created_at(userpyramid) }}</h1></div>
+                                                <div class="position-absolute bottom-0 end-0 text-danger"><h1>{{ expire_at(userpyramid) }}</h1></div>
                                             </div>
                                         </div>
-                                        <router-link :to='{ name:"userpyramidEdit" , params:{ id:userpyramid.pyramid_id } }' class="btn btn-success">Edit</router-link>
+                                        <router-link :to='{ name:"userpyramidEdit" , params:{ id:thepyramidid(userpyramid) } }' class="btn btn-success">Edit</router-link>
                                         </div>
                                     </div>
                                 </div>
@@ -115,19 +169,45 @@
                 position:null,
                 users:[],
                 search:"",
+                username:"",
+                user:{
+                    id:"",
+                    name:"",
+                    nickname:"",
+                    mobile_no:"",
+                    email:"",
+                    code:"",
+                    parrain:"",
+                    type_account:"",
+                    departement:"",
+                    carte_identite:"",
+                },
             }
         },
         mounted(){
             this.getUserpyramids(),
-            this.getUsers()
+            this.getUsers(),
+            this.showuser()
         },
         methods:{
-            loadDataModal(position,userpyramid){
-                this.position = position;
-                this.userpyramidmodal = this.theposition(userpyramid,position);
+            async showuser(){
+                await axios.get('/plf/user/'+this.$route.params.id).then(response=>{
+                    const { id,name,mobile_no,email,code,type_account,parrain,departement,nickname,carte_identite} = response.data
+                    this.user.id = id
+                    this.user.name = name
+                    this.user.nickname = nickname
+                    this.user.mobile_no = mobile_no
+                    this.user.email = email
+                    this.user.code = code
+                    this.user.parrain = parrain
+                    this.user.type_account = type_account
+                    this.user.departement = departement
+                    this.user.carte_identite = carte_identite
+                }).catch(error=>{
+                })
             },
             async getUserpyramids(){
-                await axios.get('/plf/userpyramid').then(response=>{
+                await axios.get('/plf/pyramid_user/'+this.$route.params.id).then(response=>{
                     this.userpyramids = response.data
                 }).catch(error=>{
                     this.userpyramids = []
@@ -158,14 +238,53 @@
                     this.setBackgroundColor('f');
                 })
             },
+            thecategoryname(userpyramid){
+                var value='';
+                for (const key in userpyramid) {
+                    value = (userpyramid[key].category_name);
+                    break;
+                }
+                return value;
+            },
+            thepyramidid(userpyramid){
+                var value='';
+                for (const key in userpyramid) {
+                    value = (userpyramid[key].pyramid_id);break;
+                }
+                return value;
+            },
+            thepyramidcode(userpyramid){
+                var value='';
+                for (const key in userpyramid) {
+                    value = (userpyramid[key].code_pyramid);break;
+                }
+                return value;
+            },
             theposition(userpyramid,position){
                 var value='';
                 for (const key in userpyramid) {
-                    if ( (userpyramid[key] != null) && position== userpyramid[key].position) {
+                    if (this.$route.params.id== userpyramid[key].user_id) {
+                        this.username = (userpyramid[key].user_name);
+                    }
+                    if (position== userpyramid[key].position) {
                         value = (userpyramid[key]);
                     }
                 }
                 return value;
+            },
+            created_at(userpyramid){
+                var value='';
+                for (const key in userpyramid) {
+                    value = (userpyramid[key].created_at);break;
+                }
+                return this.getdate(value);
+            },
+            expire_at(userpyramid){
+                var value='';
+                for (const key in userpyramid) {
+                    value = (userpyramid[key].expire_at);break;
+                }
+                return this.getdate(value);
             },
             getdate(value){
                 if (value) {

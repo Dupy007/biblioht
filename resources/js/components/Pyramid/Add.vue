@@ -17,8 +17,9 @@
                             <div class="col-12 mb-2">
                                 <div class="form-group">
                                     <label>User</label>
+                                    <input type="text" class="form-control" id="datatable-search-input" v-model="search" placeholder="Search">
                                     <select class="form-select" v-model="pyramid.user_id">
-                                        <option v-for="option in users" v-bind:value="option.id">{{ option.name }}</option>
+                                        <option v-for="option in filtered" v-bind:value="option.id">{{ option.name }}</option>
                                     </select>
                                 </div>
                             </div>
@@ -60,6 +61,7 @@ export default{
             users:[],
             categories:[],
             errors:[],
+            search: "",
         }
     },
     mounted(){
@@ -103,6 +105,13 @@ export default{
             if(!this.pyramid.category_id) this.errors.push("Category required.");
             e.preventDefault();
         }
-    }
+    },
+    computed: {
+        filtered() {
+        return this.users.filter(p => {
+            return p.name.toLowerCase().indexOf(this.search.toLowerCase()) != -1;
+        });
+        }
+  }
 }
 </script>

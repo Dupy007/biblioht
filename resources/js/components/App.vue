@@ -2,7 +2,7 @@
     <main>
         <nav class="navbar navbar-expand-md navbar-dark bg-dark shadow-sm">
             <div class="container-fluid">
-                <router-link to="/home" class="navbar-brand" href="#">Pyramide de la liberte financiere (PLF)</router-link>
+                <router-link to="/home" class="navbar-brand" href="#">Pyramide de la liberté financière</router-link>
 
                 <button class="navbar-toggler bg-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                     <span class="navbar-toggler-icon"></span>
@@ -22,6 +22,9 @@
                             </li>
                             <li class="nav-item" exact-active-class="active">
                                 <router-link to="/user" class=" nav-link">User</router-link>
+                            </li>
+                            <li class="nav-item" exact-active-class="active">
+                                <router-link to="/archived" class=" nav-link">Archived</router-link>
                             </li>
                         </div>
                         <div class="user" v-else>
@@ -50,7 +53,7 @@
                 </div>
             </div>
         </nav>
-        <main class="container py-4">
+        <main class="container-fluid py-4">
             <router-view></router-view>
         </main>
     </main>

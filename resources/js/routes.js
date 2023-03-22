@@ -11,7 +11,9 @@ const UserList = () => import('./components/User/List.vue')
 const UserCreate = () => import('./components/User/Add.vue')
 const UserEdit = () => import('./components/User/Edit.vue')
 const Profil = () => import('./components/User/Profil.vue')
+const Pyramid_user = () => import('./components/User/Pyramid_user.vue')
 const UserPyramidEdit = () => import('./components/UserPyramid/Edit.vue')
+const Archived = () => import('./components/UserPyramid/Archived.vue')
 import auth from './middleware/auth';
 import admin from './middleware/admin';
 
@@ -121,6 +123,22 @@ export const routes = [
         name: 'userpyramidEdit',
         path: '/userpyramid/:id/edit',
         component: UserPyramidEdit,
+        meta: {
+            middleware: [ admin],
+        },
+    },
+    {
+        name: 'Pyramid_user',
+        path: '/user/:id/pyramid',
+        component: Pyramid_user,
+        meta: {
+            middleware: [ admin],
+        },
+    },
+    {
+        name: 'Archived',
+        path: '/archived',
+        component: Archived,
         meta: {
             middleware: [ admin],
         },
