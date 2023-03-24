@@ -245,7 +245,7 @@ class UserPyramidController extends Controller
                                                                     "code_pyramid"              =>$UserPyramid->pyramid->code_pyramid,
                                                                 );
         }
-        return response()->json(['userpyramids' => $tmp,'moreuserpyramids'=>$tmpmore,'duplicata'=>$this->duplicata() ]);
+        return response()->json(['userpyramids' => $tmp,'moreuserpyramids'=>$tmpmore ]);
     }
     public function pyramid_user($id)
     {
