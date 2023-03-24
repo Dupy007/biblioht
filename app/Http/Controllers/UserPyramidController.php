@@ -10,6 +10,16 @@ use Illuminate\Support\Facades\DB;
 
 class UserPyramidController extends Controller
 {
+    private function duplicata(){
+        $return = array();
+        $u = DB::select( DB::raw("SELECT DISTINCT user_pyramid1.id FROM user_pyramids user_pyramid1 ,user_pyramids user_pyramid2
+        WHERE user_pyramid1.position = user_pyramid2.position AND user_pyramid1.pyramid_id = user_pyramid2.pyramid_id
+        AND user_pyramid1.id < user_pyramid2.id ") ) ;
+        foreach ($u as $key => $value) {
+            array_push($return , $value->id);
+        }
+        return $return;
+    }
     //
        /**
      * Display a listing of the resource.
@@ -21,6 +31,7 @@ class UserPyramidController extends Controller
         $PyramidId = Pyramid::where('statut',null)->get('id');
         $UserPyramids = UserPyramid::with(['user','pyramid'=>['category']])
                                     ->wherein('pyramid_id',$PyramidId)
+                                    ->whereNotIn ('id',$this->duplicata())
                                     ->orderBy('pyramid_id', 'desc')->get();
         $tmp=array();
         foreach ($UserPyramids as $key => $UserPyramid) {
@@ -58,6 +69,7 @@ class UserPyramidController extends Controller
         $PyramidId = Pyramid::where('statut','a')->get('id');
         $UserPyramids = UserPyramid::with(['user','pyramid'=>['category']])
                                     ->wherein('pyramid_id',$PyramidId)
+                                    ->whereNotIn ('id',$this->duplicata())
                                     ->get();
         $tmp=array();
         foreach ($UserPyramids as $key => $UserPyramid) {
@@ -160,6 +172,7 @@ class UserPyramidController extends Controller
         if (!empty($PyramidId)) {
             $UserPyramids = UserPyramid::with(['user','pyramid'=>['category']])
                                         ->wherein('pyramid_id',$PyramidId)
+                                         ->whereNotIn ('id',$this->duplicata())
                                         ->get();
             foreach ($UserPyramids as $key => $UserPyramid) {
                 $mine=$end=$complete=$confirm=$myposition=false;
@@ -167,22 +180,11 @@ class UserPyramidController extends Controller
                 array_push($pyramids_id,$UserPyramid->pyramid_id);
                 $tmp[$UserPyramid->pyramid_id][$UserPyramid->id]=array(
                                                                         "pyramid_user_id"           =>$UserPyramid->id,
-                                                                        // "pyramid_id"                =>$UserPyramid->pyramid_id,
-                                                                        // "created_at"                =>$UserPyramid->created_at,
                                                                         "position"                  =>$UserPyramid->position,
                                                                         "user_id"                   =>$UserPyramid->user_id,
                                                                         "user_code"                 =>$UserPyramid->user->code,
                                                                         "user_name"                 =>$UserPyramid->user->nickname,
                                                                         "user_mobile_no"            =>$UserPyramid->user->mobile_no,
-                                                                        // "category_name"             =>$UserPyramid->pyramid->category->name,
-                                                                        // "category_id"               =>$UserPyramid->pyramid->category->id,
-                                                                        // "pyramid_name_account"      =>$UserPyramid->pyramid->pyramid_name_account,
-                                                                        // "pyramid_number_account"    =>$UserPyramid->pyramid->pyramid_number_account,
-                                                                        // "payment_verified_at"       =>$UserPyramid->pyramid->payment_verified_at,
-                                                                        // "expire_at"                 =>$UserPyramid->pyramid->expire_at,
-                                                                        // "category_name_account"     =>$UserPyramid->pyramid->category->category_name_account,
-                                                                        // "category_number_account"   =>$UserPyramid->pyramid->category->category_number_account,
-                                                                        // "code_pyramid"              =>$UserPyramid->pyramid->code_pyramid,
 
                                                                     );
                     if (Auth::id()==$UserPyramid->pyramid->user_id && $UserPyramid->position==1) {
@@ -223,7 +225,10 @@ class UserPyramidController extends Controller
         }
 
         $pyramids = Pyramid::whereIn('category_id',array_values(array_unique($category_id)))->whereNotIn ('id',$pyramids_id)->where('statut',null)->get("id");
-        $UserPyramids = UserPyramid::with(['user','pyramid'=>['category']])->whereIn('pyramid_id',$pyramids)->inRandomOrder()->limit(4)->get();
+        $UserPyramids = UserPyramid::with(['user','pyramid'=>['category']])
+                                    ->whereIn('pyramid_id',$pyramids)
+                                    ->whereNotIn ('id',$this->duplicata())
+                                    ->inRandomOrder()->limit(4)->get();
         $tmpmore=array();
         foreach ($UserPyramids as $key => $UserPyramid) {
             $tmpmore[$UserPyramid->pyramid->category->valeur][$UserPyramid->pyramid_id][$UserPyramid->id]=array(
@@ -240,7 +245,7 @@ class UserPyramidController extends Controller
                                                                     "code_pyramid"              =>$UserPyramid->pyramid->code_pyramid,
                                                                 );
         }
-        return response()->json(['userpyramids' => $tmp,'moreuserpyramids'=>$tmpmore]);
+        return response()->json(['userpyramids' => $tmp,'moreuserpyramids'=>$tmpmore,'duplicata'=>$this->duplicata() ]);
     }
     public function pyramid_user($id)
     {
@@ -253,6 +258,7 @@ class UserPyramidController extends Controller
         if (!empty($PyramidId)) {
             $UserPyramids = UserPyramid::with(['user','pyramid'=>['category']])
                                         ->wherein('pyramid_id',$PyramidId)
+                                        ->whereNotIn ('id',$this->duplicata())
                                         ->get();
             foreach ($UserPyramids as $key => $UserPyramid) {
                 $tmp[$UserPyramid->pyramid->category->valeur][$UserPyramid->pyramid_id][$UserPyramid->id]=array(
