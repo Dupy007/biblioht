@@ -14,7 +14,7 @@ class UserPyramidController extends Controller
         $return = array();
         $u = DB::select( DB::raw("SELECT DISTINCT user_pyramid1.id FROM user_pyramids user_pyramid1 ,user_pyramids user_pyramid2
         WHERE user_pyramid1.position = user_pyramid2.position AND user_pyramid1.pyramid_id = user_pyramid2.pyramid_id
-        AND user_pyramid1.id < user_pyramid2.id ") ) ;
+        AND user_pyramid1.updated_at < user_pyramid2.updated_at ") ) ;
         foreach ($u as $key => $value) {
             array_push($return , $value->id);
         }
