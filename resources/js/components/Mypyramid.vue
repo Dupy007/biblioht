@@ -1,4 +1,4 @@
-<template>
+    <template>
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-12">
@@ -65,11 +65,13 @@
                                     </div>
                                     <button v-if="userpyramid.myposition > 7 && userpyramid.myposition < 15" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal" @click="initmodal(userpyramid,2)">Contact for payment</button>
                                     <button v-else-if="userpyramid.myposition == 15" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal" @click="initmodal(userpyramid,3)">Contact for payment</button>
+                                    <button class="btn btn-primary btnmessageclass"  data-bs-toggle="collapse" v-bind:data-bs-target="'#collapseMessage'+userpyramid.pyramid_id" v-bind:aria-expanded="false" v-bind:aria-controls="'collapseMessage'+userpyramid.pyramid_id" v-on:click="btnmessage($event,userpyramid,key)">Message</button>
+                                    <div class="collapse card" style="height: 300px;" v-bind:id="'collapseMessage'+userpyramid.pyramid_id"> <ContainerVue v-if="verificator == key" :userpyramid="userpyramid" /> </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                   
+
                 </div>
             </div>
         </div>
@@ -174,8 +176,12 @@
 </div>
 </template>
 <script>
+import ContainerVue from './Chat/Container.vue';
 export default {
     name:"mypyramid",
+    components:{
+            ContainerVue,
+    },
     data(){
         return{
             userpyramids:[],
@@ -201,6 +207,7 @@ export default {
             errors:[],
             otherpyramids:[],
             category_id:null,
+            verificator:"",
         }
     },
     mounted(){
@@ -338,6 +345,25 @@ export default {
                 }
             })
         },
+        btnmessage(event,userpyramid,key){
+                this.verificator = "";
+                const elements = document.getElementsByClassName("btnmessageclass");
+                for (const key in elements) {
+                    if (Object.hasOwnProperty.call(elements, key)) {
+                        const element = elements[key];
+                        if (event.target.ariaExpanded == 'true') {
+                            element.setAttribute("hidden","true");
+                        }
+                        else{
+                            element.removeAttribute("hidden");
+                        }
+                    }
+                }
+                if (event.target.attributes['aria-expanded'].value == "true"){
+                    event.target.removeAttribute("hidden");
+                    this.verificator = key;
+                }
+            }
     },
 }
 </script>

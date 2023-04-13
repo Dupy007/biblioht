@@ -50,6 +50,8 @@
                                             </div>
                                         </div>
                                         <router-link :to='{ name:"userpyramidEdit" , params:{ id:userpyramid.pyramid_id } }' class="btn btn-success">Edit</router-link>
+                                        <button class="btn btn-primary btnmessageclass"  data-bs-toggle="collapse" v-bind:data-bs-target="'#collapseMessage'+userpyramid.pyramid_id" v-bind:aria-expanded="false" v-bind:aria-controls="'collapseMessage'+userpyramid.pyramid_id" v-on:click="btnmessage($event,userpyramid,key)">Message</button>
+                                        <div class="collapse card" style="height: 300px;" v-bind:id="'collapseMessage'+userpyramid.pyramid_id"> <ContainerVue v-if="verificator == key" :userpyramid="userpyramid" /> </div>
                                         </div>
                                     </div>
                                 </div>
@@ -105,8 +107,11 @@
 </div>
     </template>
     <script>
-
+    import ContainerVue from './Chat/Container.vue';
     export default {
+        components:{
+            ContainerVue,
+    },
         name:"Welcome",
         data(){
             return{
@@ -115,6 +120,8 @@
                 position:null,
                 users:[],
                 search:"",
+                verificator:"",
+                messages:null,
             }
         },
         mounted(){
@@ -179,9 +186,47 @@
                     backgroundColor = ref('#00f000')
                 }
                 document.querySelector('body').style.backgroundColor = backgroundColor.value;
-                setTimeout(() => { document.querySelector('body').style.backgroundColor =null; }, 3000);
+                setTimeout(() => { document.querySelector('body').style.backgroundColor =null; }, 1500);
 
-            }
+            },
+            btnmessage(event,userpyramid,key){
+                this.verificator = "";
+                this.messages = null;
+                const elements = document.getElementsByClassName("btnmessageclass");
+                for (const key in elements) {
+                    if (Object.hasOwnProperty.call(elements, key)) {
+                        const element = elements[key];
+                        if (event.target.ariaExpanded == 'true') {
+                            element.setAttribute("hidden","true");
+                        }
+                        else{
+                            element.removeAttribute("hidden");
+                        }
+                    }
+                }
+                if (event.target.attributes['aria-expanded'].value == "true"){
+                    // var channel = pusher.subscribe("private-chat."+userpyramid.pyramid_id);
+                    // console.log(channel);
+                    // channel.bind('chat.created', function(data) {
+                    //     console.log("in console =>"+JSON.stringify(data));
+                    // });
+                    // Echo.private("chat."+userpyramid.pyramid_id)
+                    //     .listen('chat.created', (e) => {
+                    //         console.log(e);
+                    //     });
+                    // this.getMessages(userpyramid);
+                    event.target.removeAttribute("hidden");
+                    this.verificator = key;
+                }
+            },
+            getMessages(userpyramid){
+                axios.get('/plf/chat/'+userpyramid.pyramid_id).then(response=>{
+                    this.messages = response.data
+                }).catch(error=>{
+                    this.messages = [];
+                    console.log(error)
+                })
+            },
         },
         computed: {
             filtered() {

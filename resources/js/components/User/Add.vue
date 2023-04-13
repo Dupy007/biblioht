@@ -100,7 +100,6 @@ export default{
     },
     methods:{
         onFileChange(e){
-            console.log(e.target.files[0]);
             this.user.carte_identite = e.target.files[0];
         },
         async create(){

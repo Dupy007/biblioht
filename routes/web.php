@@ -23,6 +23,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('plf/confirmpaymentpyramid/{id}', [App\Http\Controllers\PyramidController::class, 'confirmpayment']);
     Route::get('plf/nextpyramid/{id}', [App\Http\Controllers\PyramidController::class, 'nextpyramid']);
     Route::post('plf/pyramidedit/{id}', [App\Http\Controllers\PyramidController::class, 'updatepyramid']);
+    Route::get('plf/chat/{pyramid_id}', [App\Http\Controllers\ChatMessageController::class, 'messages']);
+    Route::post('plf/chat', [App\Http\Controllers\ChatMessageController::class, 'store']);
     
     Route::get('session', function () { return ['auth' => Auth::user()]; });
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

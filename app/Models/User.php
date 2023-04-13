@@ -57,7 +57,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(UserPyramid::class);
     }
-
+    public function messages()
+    {
+        return $this->hasMany(ChatMessage::class);
+    }
     static function generateUniqueCode($strname)
     {
 

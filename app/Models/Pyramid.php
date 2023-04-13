@@ -23,6 +23,10 @@ class Pyramid extends Model
     {
         return $this->hasMany(UserPyramid::class);
     }
+    public function messages()
+    {
+        return $this->hasMany(ChatMessage::class);
+    }
     static function generateNextCode($id)
     {
         $code = 1;
