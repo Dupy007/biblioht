@@ -1,0 +1,57 @@
+<?php
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Headers: access");
+header("Access-Control-Allow-Methods: POST");
+header("Content-Type: application/json; charset=UTF-8");
+header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+
+require 'db_connection.php';
+
+$data = json_decode(file_get_contents("php://input"));
+if(isset($data->nom) 
+    && isset($data->prenom) 
+    && isset($data->id) 
+	&& !empty(checkInput($data->id)) 
+	&& !empty(checkInput($data->nom)) 
+    && !empty(checkInput($data->prenom))
+    && !empty(checkInput($data->adresse)) 
+    && !empty(checkInput($data->ville)) 
+    && !empty(checkInput($data->depart))
+	&& !empty(checkInput($data->pays)) 
+	){
+        $id = mysqli_real_escape_string($db_conn, checkInput($data->id));
+        $nom = mysqli_real_escape_string($db_conn, checkInput($data->nom));
+        $prenom = mysqli_real_escape_string($db_conn, checkInput($data->prenom));
+        $adresse = mysqli_real_escape_string($db_conn, checkInput($data->adresse));
+        $ville = mysqli_real_escape_string($db_conn, checkInput($data->ville));
+        $depart = mysqli_real_escape_string($db_conn, checkInput($data->depart));
+        $pays = mysqli_real_escape_string($db_conn, checkInput($data->pays));
+
+        $reqa = "UPDATE `adresse` SET `ville`=$ville,`depart`=$depart,`pays`=$pays WHERE idAdresse = $adresse";
+        $insertAdresse = mysqli_query($db_conn,$reqa);
+        if($insertAdresse){
+            $requ = "UPDATE `auteur` SET `prenomAuteur`=$prenom,`nomAuteur`=$nom WHERE idAuteur = $id";
+            $updateUser = mysqli_query($db_conn,$requ);
+            if($updateUser){
+                echo json_encode(["success"=>1,"msg"=>"Auteur Updated!"]);            
+            }else{
+                echo json_encode(["success"=>0,"msg"=>"Auteur Not Updated!"]);
+            }
+        }else{
+            echo json_encode(["success"=>0,"msg"=>"Adresse Not Updated!"]);
+        }
+   
+}
+else{
+    echo json_encode(["success"=>0,"msg"=>"Veuillez renseigner tous les champs!"]);
+}
+
+  
+
+function checkInput($data) 
+{
+  $data = trim($data);
+  $data = stripslashes($data);
+  $data = htmlspecialchars($data);
+  return $data;
+}
